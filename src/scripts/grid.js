@@ -6,8 +6,13 @@ class Grid {
         this.columns = columns; //should be 5
         this.player = player;
         this.grid = Array.from({ length: rows }, () => Array(columns).fill(null));
+        this.gameState= 'waiting';
         this.placeSymbols(); // Place symbols on grid initialization
         this.updateReels(); // Update reels after placing symbols
+       }
+
+    setGameState(state) {
+        this.gameState = state;
     }
 
     // Randomly place symbols from the player's inventory across the grid
@@ -48,15 +53,18 @@ class Grid {
 
     // Check for and handle interactions after a spin
     checkInteractions() {
+        let totalPayout = 0;
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.columns; col++) {
-                this.checkAdjacentSymbols(row, col);
+                const symbol = this.grid[row][col];
+                if (symbol) {
+                    totalPayout += symbol.basePayout;  // Add the base payout of each symbol to total
+                    // If there were interactions, you could still handle them here
+                }
             }
         }
-    }
-    payOut() {
-        console.log("payout")
-
+        this.player.addMoney(totalPayout);  // Update the player's wallet with the total payout
+        console.log(`Total payout: ${totalPayout}`);
     }
 
     // Check adjacent symbols for the current symbol and trigger interactions
@@ -84,25 +92,50 @@ class Grid {
         return this.grid.map(row => row.map(symbol => symbol ? symbol.render() : ' ').join(' ')).join('\n');
     }
 
-    // Update the DOM elements for each reel with symbols
-    updateReels() {
+    initializeReels() {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.columns; col++) {
-                // Create a correct ID by formatting the row and column indices
                 const reelId = `reel${row}${col}`;
                 const reelElement = document.getElementById(reelId);
+                const symbolElement = reelElement.querySelector('.symbol');
+                const payoutElement = reelElement.querySelector('.payout');
+    
                 if (reelElement) {
-                    if (this.grid[row][col]) {
-                        reelElement.innerHTML = this.grid[row][col].render(); // Ensure Symbol class has a render method
-                    } else {
-                        reelElement.innerHTML = ' '; // Clear if no symbol
-                    }
-                } else {
-                    console.error(`Element with ID ${reelId} not found`);
+                    symbolElement.textContent = this.grid[row][col] ? this.grid[row][col].unicode : '?';
+                    payoutElement.style.display = 'none';  // Ensure payouts are not visible on initialization
                 }
             }
         }
     }
+
+    // Update the DOM elements for each reel with symbols
+    updateReels() {
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.columns; col++) {
+                const reelId = `reel${row}${col}`;
+                const reelElement = document.getElementById(reelId);
+                const symbolElement = reelElement.querySelector('.symbol');
+                const payoutElement = reelElement.querySelector('.payout');
+    
+                if (reelElement && this.grid[row][col]) {
+                    symbolElement.textContent = this.grid[row][col].unicode;  // Update the symbol
+                    payoutElement.textContent = `+${this.grid[row][col].basePayout}`;  // Update the payout
+                    payoutElement.style.display = 'block';  // Make the payout visible
+    
+                    // Optionally trigger animation here
+                    payoutElement.classList.add('fly-to-wallet');
+                    setTimeout(() => {
+                        payoutElement.classList.remove('fly-to-wallet');
+                        payoutElement.style.display = 'none';  // Hide after animation
+                    }, 2000);  // Animation duration
+                } else {
+                    symbolElement.textContent = '?';  // Reset or keep as placeholder
+                    payoutElement.style.display = 'none';
+                }
+            }
+        }
+    }
+    
 }
 
 export default Grid;

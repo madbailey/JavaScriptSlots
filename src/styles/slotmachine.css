@@ -17,15 +17,30 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
-
-@keyframes spin {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-100%); }
+.status-bar {
+    position: fixed; /* or absolute, depending on your layout */
+    top: 10px;
+    right: 10px;
+    background-color: #f0f0f0; /* Light grey background */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 100; /* Make sure it's above other elements */
+    color: #333; /* Dark text for readability */
 }
 
 .reel-content {
-    height: 120px; /* Adjust based on content, needs to be larger than reel */
-    animation: spin 0.5s ease-in-out forwards;
+    position: relative;
+    height: 120px;
+    font-size: 24px; 
+    display: flex;
+    align-items: center;  
+    justify-content: center;  
+}
+.reel-content .symbol {
+    display: block;
+    opacity: 1;  
+    font-size: 24px;  
 }
 /* Grid of reels */
 .reels {
@@ -69,4 +84,35 @@ button:hover {
     font-weight: bold;
     background: #C8B6FF; /* Lavender */
     border-radius: 5px;
+}
+.symbol {
+    display: block;
+    opacity: 1;
+    font-size: 24px;
+}
+
+@keyframes flyToWallet {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(4.5);
+        opacity: 0;
+    }
+}
+
+.payout {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    color: rgb(90, 87, 38);
+    font-size: 16px;
+    opacity: 0; /* Start hidden until animated */
+    transition: opacity 0.5s ease-in-out; /* Control opacity separately if needed */
+}
+
+.fly-to-wallet {
+    animation: flyToWallet 2s ease-in-out forwards; /* Use the defined keyframes */
 }

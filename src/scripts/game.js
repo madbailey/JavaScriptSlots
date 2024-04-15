@@ -19,7 +19,7 @@ class Game {
     start() {
         console.log('Game started');
         this.setState(GameState.WAITING);
-        this.grid.updateReels();  // Initial reels update if necessary
+        this.grid.initializeReels();  // Initial reels update if necessary
     }
 
     spin() {
@@ -59,6 +59,7 @@ class Game {
         setTimeout(() => {
             this.promptNewSymbol();
         }, 1000);  // Show result for 1 second
+        this.grid.setGameState('waiting');
     }
 
     promptNewSymbol() {
