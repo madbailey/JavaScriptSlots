@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Slot Machine</title>
+    <link rel="stylesheet" href="src\styles\slotmachine.css">
+</head>
+<body>
+    <div id="game container">
+        <div class="slot-machine">
+            <div class="reels">
+                <div class="reel"></div>
+                <div class="reel"></div>
+                <div class="reel"></div>
+                <div class="reel"></div>
+                <div class="reel"></div>
+            </div>
+            <button id="spinButton">Spin</button>
+            <div id="resultDisplay">Press Spin to Start!</div>
+        </div>
+        <div id="chapterStartPopup" style="display: none;">
+            <!-- Pop-up content will be inserted here -->
+          </div>
+          <div id="statusBar">
+            <span id="moneyDisplay">Money: 0</span>
+            <span id="spinsRemaining">Spins Remaining: 5</span>
+          </div>
+    </div>
+    <script src="src/scripts/spin.js"></script>
+    <script src="src/scripts/main.js"></script>
+    <script src="src/scripts/gameManager.js"></script>
+    <script src="src/scripts/UIManager.js"></script>
+</body>
+</html>
+
