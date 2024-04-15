@@ -22,10 +22,11 @@ body {
 /* Reels grid styling */
 .reels {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     gap: 10px;
     padding: 10px;
-}
+  }
 
 .reel {
     width: 60px;
@@ -39,21 +40,27 @@ body {
     align-items: center;
 }
 
-/* Button styling */
-button {
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-column: 1 / -1;
+    margin-top: 10px;
+  }
+  
+  button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #FFD6FF; /* Pale pink */
+    background-color: #FFD6FF;
     color: #282c34;
     border: none;
     border-radius: 5px;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #E7C6FF; /* Light purple for hover state */
-}
+  }
+  
+  button:hover {
+    background-color: #E7C6FF;
+  }
 
 /* Display area styling */
 #resultDisplay {
