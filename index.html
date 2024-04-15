@@ -4,52 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Slot Machine</title>
-    <link rel="stylesheet" href="src\styles\slotmachine.css">
+    <link rel="stylesheet" href="src/styles/slotmachine.css">
 </head>
 <body>
-    <div id="gameContainer">
-        <div class="slot-machine">
-            <div class="reels">
-              <div class="reel" id="reel00"></div>
-              <div class="reel" id="reel01"></div>
-              <div class="reel" id="reel02"></div>
-              <div class="reel" id="reel03"></div>
-              <div class="reel" id="reel04"></div>
-              <div class="reel" id="reel10"></div>
-              <div class="reel" id="reel11"></div>
-              <div class="reel" id="reel12"></div>
-              <div class="reel" id="reel13"></div>
-              <div class="reel" id="reel14"></div>
-              <div class="reel" id="reel20"></div>
-              <div class="reel" id="reel21"></div>
-              <div class="reel" id="reel22"></div>
-              <div class="reel" id="reel23"></div>
-              <div class="reel" id="reel24"></div>
-              <div class="reel" id="reel30"></div>
-              <div class="reel" id="reel31"></div>
-              <div class="reel" id="reel32"></div>
-              <div class="reel" id="reel33"></div>
-              <div class="reel" id="reel34"></div>
-            </div>
-              </div>
-              <div class="button-container">
-                <button id="spinButton">Spin</button>
-              </div>
-            <div id="resultDisplay">Press Spin to Start!</div>
+    <div class="slot-machine">
+        <div class="reels" id="reelsContainer"></div>
+        <div class="button-container">
+            <button id="spinButton" onclick="startSpin()">Spin</button>
         </div>
-        <div id="chapterStartPopup" style="display: none;">
-            <!-- Pop-up content will be inserted here -->
-          </div>
-          <div id="statusBar">
-            <span id="moneyDisplay"> </span>
-            <span id="spinsRemaining">Spins Remaining: 5</span>
-          </div>
+        <div id="resultDisplay">Press Spin to Start!</div>
     </div>
 
     <script type="module" src="src/scripts/gameSymbol.js"></script>
-<script type="module" src="src/scripts/player.js"></script>
-<script type="module" src="src/scripts/grid.js"></script>
-<script type="module" src="src/scripts/game.js"></script>
-<script type="module" src="src/scripts/main.js"></script>
+    <script type="module" src="src/scripts/player.js"></script>
+    <script type="module" src="src/scripts/grid.js"></script>
+    <script type="module" src="src/scripts/game.js"></script>
+    <script type="module" src="src/scripts/main.js"></script>
+    
+    <script>
+        const reelsContainer = document.getElementById('reelsContainer');
+        const gridHTML = Array.from({ length: 4 }, (_, row) =>
+            Array.from({ length: 5 }, (_, col) =>
+                `<div class="reel" id="reel${row}${col}"><div class="reel-content"></div></div>`
+            ).join('')
+        ).join('');
+        reelsContainer.innerHTML = gridHTML;
+    </script>
+    
 </body>
 </html>

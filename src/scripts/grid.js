@@ -1,33 +1,49 @@
-import Symbol from './gameSymbol.js'; // Importing the Symbol class
+import Symbol from './symbol_list.js'; // Importing the Symbol class
 
 class Grid {
-    constructor(rows, columns) {
-        this.rows = rows;
-        this.columns = columns;
+    constructor(rows, columns, player) {
+        this.rows = rows; //should be 4
+        this.columns = columns; //should be 5
+        this.player = player;
         this.grid = Array.from({ length: rows }, () => Array(columns).fill(null));
+        this.placeSymbols(); // Place symbols on grid initialization
+        this.updateReels(); // Update reels after placing symbols
     }
 
-    // Fill the grid with symbols based on a dictionary mapping from player choices
-    placeSymbols(playerSymbols) {
-        for (let row = 0; row < this.rows; row++) {
-            for (let col = 0; col < this.columns; col++) {
-                // Assuming playerSymbols is a 2D array of symbol aliases
-                let alias = playerSymbols[row][col];
-                if (alias) {
-                    // Create new Symbol instance based on alias, etc.
-                    // This assumes you have a way to lookup symbol details by alias
-                    let symbolDetails = this.lookupSymbolDetails(alias);
-                    let symbol = new Symbol(symbolDetails.unicode, symbolDetails.alias, symbolDetails.tooltip, symbolDetails.basePayout);
-                    this.grid[row][col] = symbol;
-                }
+    // Randomly place symbols from the player's inventory across the grid
+    placeSymbols() {
+        let inventory = this.player.getInventorySymbols();
+        console.log("Inventory symbols:", inventory); // Check mapped symbols
+        let totalSlots = this.rows * this.columns;
+        let symbolIndexes = [];
+    
+        inventory.forEach(symbol => {
+            let position = Math.floor(Math.random() * totalSlots);
+            while (symbolIndexes.includes(position)) {
+                position = Math.floor(Math.random() * totalSlots);
             }
-        }
+            symbolIndexes.push(position);
+        });
+    
+        console.log("Symbol indexes:", symbolIndexes); // Debugging positions
+    
+        symbolIndexes.forEach(index => {
+            let row = Math.floor(index / this.columns);
+            let col = index % this.columns;
+            if (inventory.length > 0) {
+                let symbol = inventory.shift();
+                console.log(`Placing symbol at [${row}, ${col}]: ${symbol.render()}`); // Log placed symbol
+                this.grid[row][col] = symbol;
+            }
+        });
+    }
+   
+    removeSymbol(symbol) {
+        console.log("removing!")
     }
 
-    // Method to lookup symbol details based on alias
-    lookupSymbolDetails(alias) {
-        // Stub for lookup - should be replaced with actual logic to retrieve symbol information
-        return { unicode: '🔮', alias: alias, tooltip: 'Mystical power', basePayout: 10 };
+    clearGrid() {
+        this.grid = Array.from({ length: this.rows }, () => Array(this.columns).fill(null));
     }
 
     // Check for and handle interactions after a spin
@@ -37,6 +53,10 @@ class Grid {
                 this.checkAdjacentSymbols(row, col);
             }
         }
+    }
+    payOut() {
+        console.log("payout")
+
     }
 
     // Check adjacent symbols for the current symbol and trigger interactions
@@ -62,6 +82,26 @@ class Grid {
     // Render the grid for display
     render() {
         return this.grid.map(row => row.map(symbol => symbol ? symbol.render() : ' ').join(' ')).join('\n');
+    }
+
+    // Update the DOM elements for each reel with symbols
+    updateReels() {
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.columns; col++) {
+                // Create a correct ID by formatting the row and column indices
+                const reelId = `reel${row}${col}`;
+                const reelElement = document.getElementById(reelId);
+                if (reelElement) {
+                    if (this.grid[row][col]) {
+                        reelElement.innerHTML = this.grid[row][col].render(); // Ensure Symbol class has a render method
+                    } else {
+                        reelElement.innerHTML = ' '; // Clear if no symbol
+                    }
+                } else {
+                    console.error(`Element with ID ${reelId} not found`);
+                }
+            }
+        }
     }
 }
 

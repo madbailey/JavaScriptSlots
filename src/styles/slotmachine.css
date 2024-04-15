@@ -6,63 +6,63 @@ body {
     height: 100vh;
     margin: 0;
     background-color: #BBD0FF; /* Soft blue */
-    color: #282c34;
     font-family: Arial, sans-serif;
 }
 
-/* Styling for the slot machine container */
+/* Slot machine styling */
 .slot-machine {
     text-align: center;
     padding: 20px;
-    background: #B8C0FF; /* Slightly deeper blue */
+    background: #B8C0FF; /* Deeper blue */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Reels grid styling */
+@keyframes spin {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+}
+
+.reel-content {
+    height: 120px; /* Adjust based on content, needs to be larger than reel */
+    animation: spin 0.5s ease-in-out forwards;
+}
+/* Grid of reels */
 .reels {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 10px;
-    padding: 10px;
-  }
+}
 
 .reel {
+    overflow: hidden;
     width: 60px;
     height: 60px;
-    font-size: 40px;
-    line-height: 60px;
-    border: 2px solid gray; /* Lavender */
-    background: white; /* Light purple */
+    border: 2px solid gray;
+    background: white;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    grid-column: 1 / -1;
     margin-top: 10px;
-  }
-  
-  button {
+}
+
+button {
     padding: 10px 20px;
     font-size: 16px;
-    cursor: pointer;
     background-color: #FFD6FF;
     color: #282c34;
     border: none;
     border-radius: 5px;
-  }
-  
-  button:hover {
-    background-color: #E7C6FF;
-  }
+}
 
-/* Display area styling */
+button:hover {
+    background-color: #E7C6FF;
+}
+
 #resultDisplay {
     margin-top: 20px;
     padding: 10px;
@@ -70,24 +70,3 @@ body {
     background: #C8B6FF; /* Lavender */
     border-radius: 5px;
 }
-
-#chapterStartPopup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    background-color: white;
-    border: 2px solid black;
-    z-index: 1000; /* Ensure it's above other content */
-    text-align: center;
-  }
-  
-  #statusBar {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    background-color: lightgray;
-    padding: 10px;
-    border-radius: 5px;
-  }

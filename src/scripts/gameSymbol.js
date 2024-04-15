@@ -1,4 +1,5 @@
 // Class definition for a game symbol
+
 class GameSymbol {
     constructor(unicode, alias, tooltip, basePayout) {
         this.unicode = unicode;
@@ -31,7 +32,7 @@ class GameSymbol {
 
     // Render the symbol for the UI
     render() {
-        return `${this.unicode} (${this.tooltip})`;
+        return this.unicode;
     }
 }
 

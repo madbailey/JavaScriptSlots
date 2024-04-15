@@ -6,12 +6,15 @@ import symbols from './symbol_list.js';
 
 class Player {
     constructor() {
-        this.inventory = ['cat', 'cat', 'milk']; // Inventory stores aliases
+        this.inventory = ['cat', 'cat', 'milk', 'pirate', 'dog']; // Inventory stores aliases
         this.wallet = 25; // Default wallet amount
         this.bonusItems = []; // Any additional items
     }
     getInventorySymbols() {
-        return this.inventory.map(alias => symbols[alias]);
+        return this.inventory.map(alias => {
+            // Assuming symbols object is correctly set up and imported
+            return symbols[alias];
+        });
     }
 
     addSymbol(alias) {
