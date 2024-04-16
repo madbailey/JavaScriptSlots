@@ -6,14 +6,10 @@ class Grid {
         this.columns = columns; //should be 5
         this.player = player;
         this.grid = Array.from({ length: rows }, () => Array(columns).fill(null));
-        this.gameState= 'waiting';
-        this.placeSymbols(); // Place symbols on grid initialization
-        this.updateReels(); // Update reels after placing symbols
+        console.log("Grid initialization check:", this.grid);
+        this.placeSymbols();
+        this.updateReels();
        }
-
-    setGameState(state) {
-        this.gameState = state;
-    }
 
     // Randomly place symbols from the player's inventory across the grid
     placeSymbols() {
@@ -42,37 +38,81 @@ class Grid {
             }
         });
     }
+
+    calculateScores() {
+        this.applyGlobalEffects();
+        this.checkInteractions();
+        this.calculatePayouts();
+    }
    
     removeSymbol(symbol) {
         console.log("removing!")
+        this.player.removeSymbol(symbol.alias);
+    }
+    
+    countSymbols(alias) {
+        let count = 0;
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.columns; col++) {
+                if (this.grid[row][col] && this.grid[row][col].alias === alias) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
+    countSymbolsInRow(alias, row) {
+        // Check if row index is defined and within valid range
+        if (typeof row === "undefined" || row < 0 || row >= this.rows) {
+            console.error("Invalid row index:", row);
+            return 0;  // Return 0 as the count for safety
+        }
+    
+        let count = 0;
+        // Ensure that the row exists in the grid to avoid undefined errors
+        if (this.grid[row]) {
+            this.grid[row].forEach(symbol => {
+                if (symbol && symbol.alias === alias) {
+                    count++;
+                }
+            });
+        } else {
+            console.error("No such row exists in the grid:", row);
+        }
+        return count;
+    }
+
+    applyGlobalEffects() {
+        this.grid.forEach((row, rowIndex) => {
+            row.forEach(symbol => {
+                // Ensure you are correctly passing rowIndex where required
+                if (symbol && symbol.globalEffect) {
+                    if (symbol.globalEffect.effectType === 'rowMultiplier') {
+                        symbol.applyGlobalEffects(this, rowIndex); // Make sure rowIndex is passed
+                    } else {
+                        symbol.applyGlobalEffects(this);
+                    }
+                }
+            });
+        });
+    }
     clearGrid() {
         this.grid = Array.from({ length: this.rows }, () => Array(this.columns).fill(null));
     }
 
-    // Check for and handle interactions after a spin
     checkInteractions() {
-        let totalPayout = 0;
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.columns; col++) {
-                const symbol = this.grid[row][col];
-                if (symbol) {
-                    totalPayout += symbol.basePayout;  // Add the base payout of each symbol to total
-                    // If there were interactions, you could still handle them here
+                if (this.grid[row][col] !== null) {  // Check if the symbol still exists
+                    this.checkAdjacentSymbols(row, col);
                 }
             }
         }
-        this.player.addMoney(totalPayout);  // Update the player's wallet with the total payout
-        console.log(`Total payout: ${totalPayout}`);
     }
 
-    // Check adjacent symbols for the current symbol and trigger interactions
     checkAdjacentSymbols(row, col) {
-        const directions = [
-            [-1, 0], [1, 0], [0, -1], [0, 1] // Up, Down, Left, Right
-        ];
-
+        const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
         const currentSymbol = this.grid[row][col];
         if (!currentSymbol) return;
 
@@ -85,6 +125,17 @@ class Grid {
                 }
             }
         });
+    }
+
+    calculatePayouts() {
+        let totalPayout = 0;
+        this.grid.forEach(row => row.forEach(symbol => {
+            if (symbol) {
+                totalPayout += symbol.basePayout;
+            }
+        }));
+        this.player.addMoney(totalPayout);
+        console.log(`Total payout this round: ${totalPayout}`);
     }
 
     // Render the grid for display

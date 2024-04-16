@@ -1,51 +1,68 @@
-// Class definition for a game symbol
-
 class GameSymbol {
-    constructor(unicode, alias, tooltip, basePayout) {
+    constructor(unicode, alias, tooltip, basePayout, rarity) {
         this.unicode = unicode;
         this.alias = alias;
         this.tooltip = tooltip;
         this.basePayout = basePayout;
-        this.interactions = {};  // Stores interactions with other symbols
+        this.rarity = rarity; 
+        this.globalEffects = [];
+        this.adjacencyEffects = {};
     }
 
-    // Add an interaction for this symbol
-    addInteraction(otherSymbolAlias, interactionType, params = {}) {
-        this.interactions[otherSymbolAlias] = { interactionType, params };
+    // Add global effects
+    addGlobalEffect(effectType, params) {
+        this.globalEffects.push({ effectType, params });
     }
 
-    // Execute an interaction with an adjacent symbol
+    // Define adjacency effects
+    addAdjacencyEffect(adjSymbolAlias, effectType, params) {
+        this.adjacencyEffects[adjSymbolAlias] = { effectType, params };
+    }
+
+    // Execute adjacency effects with another symbol
     executeInteraction(adjSymbol, grid) {
-        let interaction = this.interactions[adjSymbol.alias];
-        if (!interaction) return;
+        let effect = this.adjacencyEffects[adjSymbol.alias];
+        if (!effect) return;
 
-        switch (interaction.interactionType) {
-            case 'destroy':
-                destroy(adjSymbol, grid);
+        switch (effect.effectType) {
+            case 'adjacencyDestruction':
+                this.destroy(adjSymbol, grid);
                 break;
-            case 'bonusPayout':
-                return bonusPayout(this, interaction.params.multiplier);
+            case 'adjacencyBonus':
+                this.applyBonus(adjSymbol, effect.params.bonusAmount);
+                break;
             default:
-                console.log("No interaction defined.");
+                console.log("No such adjacency effect defined.");
         }
     }
 
-    // Render the symbol for the UI
+    // Apply all global effects based on the current grid
+    applyGlobalEffects(grid) {
+        this.globalEffects.forEach(effect => {
+            switch (effect.effectType) {
+                case 'totalMultiplier':
+                    this.basePayout += grid.countSymbols(this.alias) * effect.params.multiplier;
+                    break;
+                case 'rowMultiplier':
+                    this.basePayout += grid.countSymbolsInRow(this.alias, effect.params.row) * effect.params.multiplier;
+                    break;
+            }
+        });
+    }
+
+    destroy(symbol, grid) {
+        console.log(`${symbol.alias} triggers destruction.`);
+        grid.removeSymbol(symbol);  // Assuming a method to remove the symbol from the grid
+        this.basePayout += symbol.basePayout; // Optional: add destroyed symbol's payout to this symbol
+    }
+
+    applyBonus(symbol, bonusAmount) {
+        console.log(`Bonus applied between ${this.alias} and ${symbol.alias}`);
+        this.basePayout += bonusAmount;
+    }
+
     render() {
         return this.unicode;
     }
 }
-
-// Function to handle the destruction of a symbol
-function destroy(symbol, grid) {
-    console.log(`${symbol.alias} triggers destruction.`);
-    grid.removeSymbol(symbol);  // Assuming a method to remove the symbol from the grid
-}
-
-// Function to calculate and apply a bonus payout
-function bonusPayout(symbol, multiplier) {
-    console.log(`${symbol.alias} triggers a bonus payout.`);
-    return symbol.basePayout * multiplier;  // Assume each symbol has a base payout value
-}
-
-export default GameSymbol;  // Export the Symbol class for use in other modules
+export default GameSymbol;  // Export the GameSymbol class for use in other modules

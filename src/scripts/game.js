@@ -30,36 +30,26 @@ class Game {
         this.grid.clearGrid();  // Clear the grid before spinning
 
         this.grid.placeSymbols();
+        this.grid.calculateScores();
         this.grid.render();
         this.grid.updateReels();
 
         // Simulate spinning duration
         setTimeout(() => {
-            this.scoreRound();
+            this.showResult();
         }, 2000);  // 2 seconds of spinning
     }
 
-    scoreRound() {
-        
-        console.log('Scoring round...');
-        this.setState(GameState.SCORING);
-
-        this.grid.checkInteractions();  // Assume interactions are handled by Grid
-
-
-    }
 
     showResult() {
         console.log('Showing result...');
         this.setState(GameState.RESULT);
+        this.grid.initializeReels();  // Reset the reels
 
-        // Update results in UI
-        this.grid.updateReels();  // Ensure the grid displays the latest state
 
         setTimeout(() => {
             this.promptNewSymbol();
         }, 1000);  // Show result for 1 second
-        this.grid.setGameState('waiting');
     }
 
     promptNewSymbol() {
