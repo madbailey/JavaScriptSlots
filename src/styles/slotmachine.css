@@ -116,3 +116,66 @@ button:hover {
 .fly-to-wallet {
     animation: flyToWallet 2s ease-in-out forwards; /* Use the defined keyframes */
 }
+/* Add to your existing slotmachine.css */
+.symbol-choice {
+    font-size: 24px;
+    margin: 10px;
+    padding: 15px;
+    border: 2px solid #C8B6FF;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.symbol-choice:hover {
+    transform: scale(1.1);
+    background-color: #FFD6FF;
+}
+
+.winning-symbol {
+    animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.spin-button-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Enhanced payout animation */
+@keyframes flyToWallet {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(var(--tx), var(--ty)) scale(1.5);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+    }
+}
+
+.payout.animate {
+    animation: flyToWallet 1s ease-out forwards;
+}
+
+/* Symbol interaction visualization */
+.interaction-effect {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.interaction-active {
+    opacity: 1;
+}

@@ -61,8 +61,69 @@ class GameSymbol {
         this.basePayout += bonusAmount;
     }
 
-    render() {
-        return this.unicode;
+render() {
+    return this.unicode;
+}
+
+executeInteraction(adjSymbol, grid, position) {
+    let effect = this.adjacencyEffects[adjSymbol.alias];
+    if (!effect) return;
+
+    // Create visual effect container
+    const effectElement = document.createElement('div');
+    effectElement.className = 'interaction-effect';
+    
+    switch (effect.effectType) {
+        case 'adjacencyDestruction':
+            // Visualize cat drinking milk
+            if (this.alias === 'cat' && adjSymbol.alias === 'milk') {
+                effectElement.innerHTML = '💫';
+                this.animateDestruction(adjSymbol, grid, position, effectElement);
+            }
+            break;
+            
+        case 'adjacencyBonus':
+            // Visualize pirate and dog interaction
+            if (this.alias === 'pirate' && adjSymbol.alias === 'dog') {
+                effectElement.innerHTML = '⭐';
+                this.animateBonus(effect.params.bonusAmount, position, effectElement);
+            }
+            break;
     }
 }
-export default GameSymbol;  // Export the GameSymbol class for use in other modules
+
+animateDestruction(symbol, grid, position, effectElement) {
+    const reelElement = document.getElementById(`reel${position.row}${position.col}`);
+    reelElement.appendChild(effectElement);
+    effectElement.classList.add('interaction-active');
+
+    setTimeout(() => {
+        grid.removeSymbol(symbol);
+        effectElement.remove();
+        
+        // Update visual representation
+        const symbolElement = reelElement.querySelector('.symbol');
+        symbolElement.style.transition = 'opacity 0.5s';
+        symbolElement.style.opacity = '0';
+    }, 1000);
+}
+
+animateBonus(bonusAmount, position, effectElement) {
+    const reelElement = document.getElementById(`reel${position.row}${position.col}`);
+    reelElement.appendChild(effectElement);
+    effectElement.classList.add('interaction-active');
+
+    // Show bonus amount
+    const bonusElement = document.createElement('div');
+    bonusElement.className = 'payout';
+    bonusElement.textContent = `+${bonusAmount}`;
+    reelElement.appendChild(bonusElement);
+
+    setTimeout(() => {
+        effectElement.remove();
+        bonusElement.classList.add('animate');
+    }, 1000);
+}
+}
+
+export default GameSymbol;
