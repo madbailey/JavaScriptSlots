@@ -5,63 +5,77 @@ import GameSymbol from "./gameSymbol.js";
 import symbols from './symbol_list.js';
 
 class Player {
-    constructor() {
-        this.inventory = ['cat', 'cat', 'milk', 'pirate', 'dog']; // Inventory stores aliases
-        this.wallet = 25; // Default wallet amount
-        this.bonusItems = []; // Any additional items
-    }
-    getInventorySymbols() {
-        return this.inventory.map(alias => {
-            // Assuming symbols object is correctly set up and imported
-            return symbols[alias];
-        });
-    }
+  constructor() {
+      this.inventory = ['cat', 'cat', 'milk', 'pirate', 'dog']; // Start with some symbols
+      this.wallet = 25;
+      this.bonusItems = [];
+      this.game = null; // Add a game property
+  }
+  //add this method
+  setGame(gameInstance)
+  {
+      this.game = gameInstance;
+  }
 
-    addSymbol(alias) {
-        if (symbols[alias]) {
-            this.inventory.push(alias);
-        } else {
-            console.error(`Symbol with alias ${alias} does not exist.`);
-        }
-    }
+  getInventorySymbols() {
+      return this.inventory.map(alias => symbols[alias]);
+  }
 
-    removeSymbol(alias) {
-        const index = this.inventory.indexOf(alias);
-        if (index !== -1) {
-            this.inventory.splice(index, 1);
-        } else {
-            console.error(`Symbol with alias ${alias} not found in inventory.`);
-        }
-    }
-  
-    addMoney(amount) {
-        this.wallet += amount;
-        this.updateMoneyDisplay();
-      }
-    
-      removeMoney(amount) {
-        if (this.wallet >= amount) {
-          this.wallet -= amount;
-          this.updateMoneyDisplay();
-          return true;
-        }
-        return false;
-      }
-  
-    addBonusItem(item) {
-      this.bonusItems.push(item);
-    }
-  
-    removeBonusItem(item) {
-      const index = this.bonusItems.indexOf(item);
-      if (index !== -1) {
-        this.bonusItems.splice(index, 1);
-      }
-    }
-    updateMoneyDisplay() {
-        const moneyDisplay = document.getElementById('moneyDisplay');
-        moneyDisplay.textContent = `Money: ${this.wallet}`;
+   addSymbol(alias) {
+      if (symbols[alias]) {
+          this.inventory.push(alias);
+          console.log(`${alias} added to inventory.  Inventory is now:`, this.inventory); // Debugging
+          if (this.game) {
+              this.game.updateUI();  // Call game.updateUI()
+          }
+
+      } else {
+          console.error(`Symbol with alias ${alias} does not exist.`);
       }
   }
 
-  export default Player;  // Export the Player class for use in other modules
+  removeSymbol(alias) {
+      const index = this.inventory.indexOf(alias);
+      if (index !== -1) {
+          this.inventory.splice(index, 1);
+          console.log("Removed symbol:", alias, "Inventory:", this.inventory); // Debugging
+      } else {
+          console.error(`Symbol with alias ${alias} not found in inventory.`);
+      }
+  }
+
+
+  addMoney(amount) {
+      this.wallet += amount;
+      this.updateMoneyDisplay();
+  }
+
+  removeMoney(amount) {
+      if (this.wallet >= amount) {
+          this.wallet -= amount;
+          this.updateMoneyDisplay();
+          return true;
+      }
+      return false;
+  }
+
+  addBonusItem(item) {
+      this.bonusItems.push(item);
+  }
+
+  removeBonusItem(item) {
+      const index = this.bonusItems.indexOf(item);
+      if (index !== -1) {
+          this.bonusItems.splice(index, 1);
+      }
+  }
+
+  updateMoneyDisplay() {
+      const moneyDisplay = document.getElementById('moneyDisplay');
+      if (moneyDisplay) { // Check if the element exists
+          moneyDisplay.textContent = `Money: ${this.wallet}`;
+      }
+  }
+}
+
+export default Player;

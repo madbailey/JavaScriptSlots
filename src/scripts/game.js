@@ -1,12 +1,15 @@
-import Grid from './grid.js';  // Import the Grid class
-import Player from './player.js';  // Assuming Player is also a needed class
+// src/scripts/game.js
+import Grid from './grid.js';
+import Player from './player.js';
+import symbols from './symbol_list.js';  // Import the symbols
 
 const GameState = {
     WAITING: 'waiting',
     SPINNING: 'spinning',
     SCORING: 'scoring',
     RESULT: 'result',
-    ADD_SYMBOL: 'add_symbol'
+    ADD_SYMBOL: 'add_symbol',
+    GAME_OVER: 'game_over' // Add a game over state
 };
 
 class Game {
@@ -14,112 +17,141 @@ class Game {
         this.grid = new Grid(4, 5, player);
         this.player = player;
         this.state = GameState.WAITING;
-        this.symbolChoices = ['cat', 'milk', 'dog', 'pirate'];
-        this.setupEventListeners();
+        this.rentDue = 50;  // Initial rent
+        this.rentIncrease = 25; // Rent increases by this much each time
+        this.spinsRemaining = 15; // Number of spins before rent is due
+        this.currentSpin = 0;
     }
 
-    setupEventListeners() {
-        const resultDisplay = document.getElementById('resultDisplay');
-        document.getElementById('spinButton').addEventListener('click', () => {
-            if (this.state === GameState.WAITING) {
-                if (this.player.wallet >= 5) { // Cost to spin
-                    this.player.removeMoney(5);
-                    this.spin();
-                } else {
-                    resultDisplay.textContent = "Not enough money to spin!";
-                }
-            }
-        });
+    start() {
+        console.log('Game started');
+        this.setState(GameState.WAITING);
+        this.grid.initializeReels();
+        this.updateUI(); // Add a method to update the entire UI
     }
 
     spin() {
         if (this.state !== GameState.WAITING) return;
 
-        const resultDisplay = document.getElementById('resultDisplay');
-        resultDisplay.textContent = "Spinning...";
-        
+        console.log('Spinning...');
         this.setState(GameState.SPINNING);
         this.grid.clearGrid();
+        this.currentSpin++;
+        this.grid.placeSymbols(); //place symbols before the timeout
+        // Simulate spinning duration (important for visual feedback)
+        setTimeout(() => {
+             this.grid.calculateScores();
+            this.grid.render(); // Update the grid display
+            this.grid.updateReels(); //update the UI
+            this.setState(GameState.SCORING);
+            setTimeout(() => {
+                 this.showResult();
+             }, 1000); // Wait 2 second to move to result
 
-        // Disable spin button during animation
-        document.getElementById('spinButton').disabled = true;
 
-        // Animate the reels
-        this.animateReels().then(() => {
-            this.grid.placeSymbols();
-            this.grid.calculateScores();
-            this.grid.render();
-            this.grid.updateReels();
-            this.showResult();
-        });
+        }, 1000);  // 2 seconds of spinning (adjust as needed)
     }
 
-    async animateReels() {
-        const reels = document.querySelectorAll('.reel');
-        const symbols = ['🐱', '🥛', '🐶', '🏴‍☠️'];
-        
-        // Create animation promises for each reel
-        const animations = Array.from(reels).map((reel, index) => {
-            return new Promise(resolve => {
-                let count = 0;
-                const symbolElement = reel.querySelector('.symbol');
-                
-                const interval = setInterval(() => {
-                    symbolElement.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                    count++;
-                    
-                    if (count > 10 + (index * 2)) { // Stagger the stopping of reels
-                        clearInterval(interval);
-                        resolve();
-                    }
-                }, 100);
-            });
-        });
-
-        await Promise.all(animations);
-    }
 
     showResult() {
-        const resultDisplay = document.getElementById('resultDisplay');
-        resultDisplay.textContent = "Calculating winnings...";
-        
-        setTimeout(() => {
-            this.setState(GameState.RESULT);
-            resultDisplay.textContent = "Choose a new symbol!";
-            this.promptNewSymbol();
-        }, 2000);
+        console.log('Showing result...');
+        this.setState(GameState.RESULT);
+        this.updateUI(); // Update money display
+        this.spinsRemaining--;
+
+
+         if (this.spinsRemaining <= 0) {
+                this.checkRentPayment();
+            } else {
+                // Go to add symbol phase
+                setTimeout(() => {
+                  this.promptNewSymbol();
+                }, 1000);
+            }
     }
 
     promptNewSymbol() {
-        const resultDisplay = document.getElementById('resultDisplay');
-        resultDisplay.innerHTML = `
-            Choose a new symbol:<br>
-            ${this.symbolChoices.map((symbol, index) => `
-                <button class="symbol-choice" data-symbol="${symbol}">
-                    ${symbols[symbol].unicode}
-                </button>
-            `).join('')}
-        `;
+        console.log('Adding new symbol...');
+        this.setState(GameState.ADD_SYMBOL);
 
-        // Add event listeners to symbol choice buttons
-        document.querySelectorAll('.symbol-choice').forEach(button => {
-            button.addEventListener('click', () => {
-                const symbol = button.dataset.symbol;
-                this.player.addSymbol(symbol);
-                this.waitForNextRound();
-                resultDisplay.textContent = "Ready for next spin!";
-                document.getElementById('spinButton').disabled = false;
-            }, { once: true }); // Ensure event listener only fires once
-        });
+        // Display symbol choices to the player.  This is *crucial*.
+        this.displaySymbolChoices();
+
+        // Player.addSymbol() will now be called *after* the player makes a choice.
     }
 
     waitForNextRound() {
+        console.log('Waiting for next round...');
         this.setState(GameState.WAITING);
-        this.grid.initializeReels();
+        this.updateUI();
     }
 
+
     setState(newState) {
+        console.log(`Transitioning to ${newState}`);
         this.state = newState;
+    }
+
+    updateUI() {
+        this.player.updateMoneyDisplay();
+        document.getElementById('rentDisplay').textContent = `Rent Due: ${this.rentDue}`;
+        document.getElementById('spinsRemainingDisplay').textContent = `Spins Remaining: ${this.spinsRemaining}`;
+    }
+
+    checkRentPayment() {
+        if (this.player.wallet >= this.rentDue) {
+            this.player.removeMoney(this.rentDue);
+            this.rentDue += this.rentIncrease;
+            this.spinsRemaining = 15; // Reset spins
+            this.updateUI();
+            this.promptNewSymbol(); // Continue the game
+              // Add "rent paid" animation
+              const rentDisplay = document.getElementById('rentDisplay');
+              rentDisplay.classList.add('rent-paid');
+              setTimeout(() => {
+                  rentDisplay.classList.remove('rent-paid');
+              }, 2000);
+        } else {
+            this.setState(GameState.GAME_OVER);
+            alert("Game Over! You couldn't pay the rent.");
+            // You could also offer a "restart" button here.
+             // Disable spin button
+             document.getElementById('spinButton').disabled = true;
+        }
+    }
+
+    displaySymbolChoices() {
+        const symbolChoicesContainer = document.getElementById('symbolChoices');
+        symbolChoicesContainer.innerHTML = ''; // Clear previous choices
+
+        // Get 3 random symbols
+        const availableSymbols = Object.keys(symbols);
+        const chosenSymbols = [];
+        for (let i = 0; i < 3; i++) {
+            let randomIndex = Math.floor(Math.random() * availableSymbols.length);
+            chosenSymbols.push(availableSymbols[randomIndex]);
+            availableSymbols.splice(randomIndex, 1);  // Remove to avoid duplicates
+        }
+
+
+        chosenSymbols.forEach(symbolAlias => {
+            const symbol = symbols[symbolAlias];
+            const button = document.createElement('button');
+            button.textContent = `${symbol.unicode} (${symbol.alias}) - ${symbol.tooltip}`;
+            button.onclick = () => {
+                this.player.addSymbol(symbolAlias);
+                symbolChoicesContainer.innerHTML = ''; // Clear choices after selection
+
+                // ADD THIS LINE TO HIDE THE CONTAINER:
+                symbolChoicesContainer.style.display = 'none';
+
+                this.waitForNextRound();
+            };
+            symbolChoicesContainer.appendChild(button);
+        });
+
+          // Show the container
+        symbolChoicesContainer.style.display = 'block';
     }
 }
 

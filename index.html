@@ -12,11 +12,21 @@
         <div class="button-container">
             <button id="spinButton" onclick="startSpin()">Spin</button>
         </div>
+          <!-- Status Bar -->
+        <div id="statusBar" class="status-bar">
+            <span id="moneyDisplay">Money: 25</span>
+            <span id="rentDisplay">Rent Due: 50</span>
+            <span id="spinsRemainingDisplay">Spins Remaining: 15</span>
+        </div>
+
         <div id="resultDisplay">Press Spin to Start!</div>
+         <!-- Symbol Choices (Initially Hidden) -->
+        <div id="symbolChoices" style="display: none;">
+            <h2>Choose a Symbol:</h2>
+            <!-- Buttons will be added dynamically here -->
+        </div>
     </div>
-    <div id="statusBar" class="status-bar">
-        <span id="moneyDisplay">Money: 25</span>
-    </div>
+
 
     <script type="module" src="src/scripts/gameSymbol.js"></script>
     <script type="module" src="src/scripts/player.js"></script>
@@ -30,15 +40,15 @@
             Array.from({ length: 5 }, (_, col) =>
                 `<div class="reel" id="reel${row}${col}">
                     <div class="reel-content">
-                        <span class="symbol">?</span>  <!-- Placeholder symbol -->
-                        <span class="payout" style="display:none;">+0</span>  <!-- Hidden payout placeholder -->
+                        <span class="symbol">?</span>
+                        <span class="payout" style="display:none;">+0</span>
                     </div>
                 </div>`
             ).join('')
         ).join('');
         reelsContainer.innerHTML = gridHTML;
     </script>
-    
-    
+
+
 </body>
 </html>
