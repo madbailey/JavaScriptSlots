@@ -47,19 +47,10 @@ body {
     width: 60px;
     height: 60px;
     border: 2px solid gray;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.8) 48%,
-      rgba(255, 255, 255, 0.8) 52%,
-      rgba(255, 255, 255, 0.1) 100%
-    );
-    perspective: 1000px;
-    transform-style: preserve-3d;
+    display: flex;
     justify-content: center;
     align-items: center;
-    display: flex;
-  }
+}
   
   .reel-content {
     position: relative;
