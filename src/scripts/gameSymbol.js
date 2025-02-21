@@ -50,9 +50,24 @@ class GameSymbol {
     }
 
     destroy(symbol, grid) {
-        console.log(`${this.alias} destroys ${symbol.alias}.`); // Show who destroys whom
-        this.basePayout += symbol.basePayout; // Add destroyed symbol's payout
-        grid.removeSymbol(symbol);  // Remove from grid (and player inventory)
+        console.log(`${this.alias} destroys ${symbol.alias}.`); // Show destruction log
+    
+        const reelElement = document.getElementById(`reel${symbol.row}${symbol.col}`);
+        if (reelElement) {
+            const symbolElement = reelElement.querySelector('.symbol');
+    
+            // Add fade-out animation before removing the symbol
+            symbolElement.classList.add('milk-destroyed');
+    
+            // Delay removal until after the animation
+            setTimeout(() => {
+                this.basePayout += symbol.basePayout; // Add destroyed symbol's payout
+                setTimeout(() => {
+                    grid.removeSymbol(adjSymbol);
+                }, 1000); // Now actually remove it
+                symbolElement.textContent = ""; // Visually clear it
+            }, 1000); // Wait 1 second for the animation to finish
+        }
     }
 
     applyBonus(adjacentSymbol, bonusAmount) { // Corrected parameter name
