@@ -44,6 +44,7 @@ body {
   .reel {
     position: relative;
     overflow: hidden;
+    background: white;
     width: 60px;
     height: 60px;
     border: 2px solid gray;
@@ -53,7 +54,7 @@ body {
 }
   
   .reel-content {
-    position: absolute;
+    position: relative;
     transition: transform 0.3s ease-out;
     height: auto; 
     font-size: 24px;

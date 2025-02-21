@@ -32,24 +32,24 @@ class Game {
 
     spin() {
         if (this.state !== GameState.WAITING) return;
-
+    
         console.log('Spinning...');
         this.setState(GameState.SPINNING);
         this.grid.clearGrid();
         this.currentSpin++;
         this.grid.placeSymbols(); //place symbols before the timeout
-        // Simulate spinning duration (important for visual feedback)
-        setTimeout(() => {
-             this.grid.calculateScores();
+    
+        // Trigger the spinReels animation
+        this.grid.spinReels().then(() => { // Await completion of animation
+            this.grid.calculateScores();
             this.grid.render(); // Update the grid display
             this.grid.updateReels(); //update the UI
             this.setState(GameState.SCORING);
             setTimeout(() => {
-                 this.showResult();
-             }, 1000); // Wait 2 second to move to result
-
-
-        }, 1000);  // 2 seconds of spinning (adjust as needed)
+                this.showResult();
+            }, 1000);
+        });
+    
     }
 
 
