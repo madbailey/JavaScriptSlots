@@ -297,7 +297,9 @@ class Grid {
     
                                             // Delay actual removal from grid
                                             setTimeout(() => {
-                                                adjSymbolElement.textContent = ""; // Remove symbol visually
+                                                if (!this.grid[row][col]) {
+                                                    adjsymbolElement.textContent = "?"; // Ensure empty spaces show "?"
+                                                }
                                             }, 1000);
                                         }
     
