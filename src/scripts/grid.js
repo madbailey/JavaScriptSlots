@@ -322,7 +322,7 @@ class Grid {
                 }
             }
         }
-           // ADD THIS TO CREATE AND ANIMATE PAYOUT DIVS:
+           
         this.animatePayouts();
     }
     animatePayouts() {
@@ -366,7 +366,7 @@ class Grid {
                     ${walletRect.top - startRect.top}px
                 ) scale(0.2)`;
                 payoutDiv.style.opacity = '0';
-            }, index * 100);
+            }, index * 250);
     
             // Cleanup
             setTimeout(() => {

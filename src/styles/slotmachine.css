@@ -272,7 +272,7 @@ body {
   }
   
   .payout.animate {
-      animation: flyToWallet 1s ease-out forwards;
+      animation: flyToWallet 3.5s ease-out forwards;
   }
   
   .floating-payout {
