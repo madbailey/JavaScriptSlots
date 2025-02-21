@@ -1,348 +1,316 @@
-/* General body styling */
+/* General Styling */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #BBD0FF; /* Soft blue */
+    background-color: #bbd0ff; /* Soft blue */
     font-family: Arial, sans-serif;
-}
-
-/* Slot machine styling */
-.slot-machine {
-    text-align: center;
-    padding: 20px;
-    background: #B8C0FF; /* Deeper blue */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-.status-bar {
-    position: fixed; /* or absolute, depending on your layout */
+  }
+  
+  /* Status Bar */
+  .status-bar {
+    position: fixed;
     top: 10px;
     right: 10px;
     background-color: #f0f0f0; /* Light grey background */
     padding: 10px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    z-index: 100; /* Make sure it's above other elements */
-    color: #333; /* Dark text for readability */
-}
-
-.reel-content {
-    position: relative;
-    height: 120px;
-    font-size: 24px; 
-    display: flex;
-    align-items: center;  
-    justify-content: center;  
-}
-.reel-content .symbol {
-    display: block;
-    opacity: 1;  
-    font-size: 24px;  
-}
-/* Grid of reels */
-.reels {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    color: #333;
+  }
+  
+  /* Slot Machine Container */
+  .slot-machine {
+    text-align: center;
+    padding: 20px;
+    background: #b8c0ff; /* Deeper blue */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /*  For absolute positioning of symbol choices */
+  }
+  
+  /* Reels Grid */
+  .reels {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 10px;
-}
-
-.reel {
+  }
+  
+  /* Individual Reel */
+  .reel {
+    position: relative;
     overflow: hidden;
     width: 60px;
     height: 60px;
     border: 2px solid gray;
-    background: white;
-    display: flex;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.8) 48%,
+      rgba(255, 255, 255, 0.8) 52%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    perspective: 1000px;
+    transform-style: preserve-3d;
     justify-content: center;
     align-items: center;
-}
-
-.button-container {
-    margin-top: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #FFD6FF;
-    color: #282c34;
-    border: none;
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: #E7C6FF;
-}
-
-#resultDisplay {
-    margin-top: 20px;
-    padding: 10px;
-    font-weight: bold;
-    background: #C8B6FF; /* Lavender */
-    border-radius: 5px;
-}
-.symbol {
+    display: flex;
+  }
+  
+  /* Reel Content (Symbols Container) */
+  .reel-content {
+    position: relative;
+    transition: transform 0.5s ease-out;
+    height: 120px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Symbol */
+  .symbol {
     display: block;
     opacity: 1;
     font-size: 24px;
-}
-
-@keyframes flyToWallet {
-    0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100px) scale(4.5);
-        opacity: 0;
-    }
-}
-
-.payout {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    color: rgb(90, 87, 38);
+  }
+  
+  /* Symbol blur while spinning*/
+  .spinning .symbol {
+      filter: blur(2px);
+  }
+  
+  /* Button Styling */
+  .button-container {
+    margin-top: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
     font-size: 16px;
-    opacity: 0; /* Start hidden until animated */
-    transition: opacity 0.5s ease-in-out; /* Control opacity separately if needed */
-}
-
-.fly-to-wallet {
-    animation: flyToWallet 2s ease-in-out forwards; /* Use the defined keyframes */
-}
-/* Add to your existing slotmachine.css */
-.symbol-choice {
-    font-size: 24px;
-    margin: 10px;
-    padding: 15px;
-    border: 2px solid #C8B6FF;
-    background: white;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-}
-
-.symbol-choice:hover {
-    transform: scale(1.1);
-    background-color: #FFD6FF;
-}
-
-.winning-symbol {
-    animation: pulse 0.5s ease-in-out;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
-
-.spin-button-disabled {
+    background-color: #ffd6ff;
+    color: #282c34;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer; /*  Add cursor pointer for better UX */
+    transition: background-color 0.2s ease; /* Smooth transition */
+  }
+  
+  button:hover {
+    background-color: #e7c6ff;
+  }
+  
+  /* Disable Spin Button */
+  .spin-button-disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-/* Enhanced payout animation */
-@keyframes flyToWallet {
+  }
+  
+  /* Result Display */
+  #resultDisplay {
+    margin-top: 20px;
+    padding: 10px;
+    font-weight: bold;
+    background: #c8b6ff; /* Lavender */
+    border-radius: 5px;
+  }
+  
+  /* Animations */
+  
+  @keyframes spinReel {
     0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: translate(var(--tx), var(--ty)) scale(1.5);
-        opacity: 0.7;
+      transform: translateY(0);
     }
     100% {
-        transform: translate(var(--tx), var(--ty)) scale(0);
-        opacity: 0;
+      transform: translateY(-1000px);
     }
-}
-
-.payout.animate {
-    animation: flyToWallet 1s ease-out forwards;
-}
-
-/* Symbol interaction visualization */
-.interaction-effect {
+  }
+  
+  @keyframes flyToWallet {
+    0% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+  
+    50% {
+      transform: translate(var(--tx), var(--ty)) scale(1.5);
+      opacity: 0.7;
+    }
+  
+    100% {
+      transform: translate(var(--tx), var(--ty)) scale(0);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes floatUpAndFade {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  
+    100% {
+      transform: translateY(-50px) scale(1.5); /* Adjust as needed */
+      opacity: 0;
+    }
+  }
+  
+  @keyframes sparkle {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+  }
+  
+  @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-2px); }
+      75% { transform: translateX(2px); }
+  }
+  
+  @keyframes rentPaidAnimation{
+      0% {
+          transform: scale(1);
+          opacity: 1;
+      }
+      50% {
+          transform: scale(1.2);
+          opacity: 0.8;
+      }
+      100% {
+          transform: scale(1);
+          opacity: 1;
+      }
+  }
+  
+  /* Reel State Styles */
+  
+  .spinning {
+    animation: spinReel 0.5s linear infinite;
+  }
+  
+  .stopping {
+    animation: none;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  /* Symbol Choices */
+  #symbolChoices {
     position: absolute;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.interaction-active {
-    opacity: 1;
-}
-
-.slot-machine {
-    text-align: center;
-    padding: 20px;
-    background: #B8C0FF; /* Deeper blue */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    position: relative; /* Add this */
-}
-#symbolChoices {
-    position: absolute;
-    top: 50%; /* Adjust as needed */
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #f0f0f0;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    z-index: 10; /* Make sure it's above other elements */
-    text-align: center; /* Center the buttons */
-}
-
-#symbolChoices button {
-    margin: 5px; /* Add some spacing between buttons */
+    z-index: 10;
+    text-align: center;
+  }
+  
+  #symbolChoices h2 {
+    margin: 5px;
     padding: 8px 12px;
     font-size: 14px;
-    /* Other styling for buttons */
-}
-
-#symbolChoices h2{
-    margin: 5px; /* Add some spacing between buttons */
+  }
+  
+  #symbolChoices button {
+    margin: 5px;
     padding: 8px 12px;
     font-size: 14px;
-}
-.dollar-animation {
-    position: absolute;  /* Crucial for positioning */
-    color: green;       /* Or any color you like */
-    font-weight: bold;
-    user-select: none;   /* Prevent text selection */
-    pointer-events: none; /* Make it non-interactive */
-    animation: floatUpAndFade 1.5s ease-out forwards; /* Animation details */
-    z-index: 5; /* Ensure it's above the symbols, but below symbol choices*/
-}
-
-.floating-payout {
-    position: absolute; /* Important for positioning */
-    color: gold; /* Or whatever color you want */
-    font-weight: bold;
-    font-size: 20px;
-    pointer-events: none; /* So it doesn't block clicks */
-    z-index: 100; /* Make sure it's on top */
-    transition: transform 2s ease-out, opacity 2s ease-out; /* Animation */
-}
-
-@keyframes floatUpAndFade {
-    0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-50px) scale(1.5); /* Adjust as needed */
-        opacity: 0;
-    }
-}
-@keyframes spinReel {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(-1000px);
-    }
-}
-
-.reel {
-    position: relative;
-    overflow: hidden;
-}
-
-.reel-content {
-    position: relative;
-    transition: transform 0.5s ease-out;
-}
-
-.spinning {
-    animation: spinReel 0.5s linear infinite;
-}
-
-.stopping {
-    animation: none;
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Add blur effect during spin */
-.spinning .symbol {
-    filter: blur(2px);
-}
-.rent-paid {
-    color: green; /* Example styling */
-    font-weight: bold;
-    animation: rentPaidAnimation 2s ease-out;
-}
-.floating-payout {
+  }
+  
+  /* Symbol Choice styling */
+  .symbol-choice {
+    font-size: 24px;
+    margin: 10px;
+    padding: 15px;
+    border: 2px solid #c8b6ff;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+  }
+  
+  .symbol-choice:hover {
+    transform: scale(1.1);
+    background-color: #ffd6ff;
+  }
+  
+  /* Visual Effects */
+  
+  .winning-symbol {
+      animation: pulse 0.5s ease-in-out;
+  }
+  
+  .interaction-effect {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .interaction-active {
+      opacity: 1;
+  }
+  
+  .symbol-win {
+      animation: sparkle 0.5s ease infinite;
+  }
+  
+  .shake {
+      animation: shake 0.1s ease-in-out 3;
+  }
+  
+  /* Payouts and Wins */
+  
+  .payout {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      color: rgb(90, 87, 38);
+      font-size: 16px;
+      opacity: 0; /* Start hidden until animated */
+      transition: opacity 0.5s ease-in-out; /* Control opacity separately if needed */
+  }
+  
+  .payout.animate {
+      animation: flyToWallet 1s ease-out forwards;
+  }
+  
+  .floating-payout {
     position: absolute;
     color: gold;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     font-weight: bold;
     font-size: 24px;
     pointer-events: none;
     z-index: 100;
     transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes sparkle {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.8; }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-2px); }
-    75% { transform: translateX(2px); }
-}
-
-.shake {
-    animation: shake 0.1s ease-in-out 3;
-}
-
-/* Enhanced reel styling */
-.reel {
-    background: linear-gradient(180deg, 
-        rgba(255,255,255,0.1) 0%, 
-        rgba(255,255,255,0.8) 48%, 
-        rgba(255,255,255,0.8) 52%, 
-        rgba(255,255,255,0.1) 100%
-    );
-    perspective: 1000px;
-    transform-style: preserve-3d;
-}
-.symbol-win {
-    animation: sparkle 0.5s ease infinite;
-}
-
-.mega-win {
+  }
+  
+  .mega-win {
     font-size: 32px;
-    color: #FFD700;
-    text-shadow: 
-        0 0 5px #fff,
-        0 0 10px #fff,
-        0 0 15px #FFD700;
-}
-
-@keyframes rentPaidAnimation{
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.2);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-
-}
+    color: #ffd700;
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffd700;
+  }
+  
+  .dollar-animation {
+    position: absolute;
+    color: green;
+    font-weight: bold;
+    user-select: none;
+    pointer-events: none;
+    animation: floatUpAndFade 1.5s ease-out forwards;
+    z-index: 5;
+  }
+  
+  .rent-paid {
+    color: green;
+    font-weight: bold;
+    animation: rentPaidAnimation 2s ease-out;
+  }
+  
