@@ -158,11 +158,11 @@ class Grid {
                 const reelElement = document.getElementById(`reel${row}${col}`);
                 const reelContent = reelElement.querySelector('.reel-content');
     
-                // Stop Spinning (remove spinning animation)
-                reelContent.classList.remove('spinning');
-                reelContent.classList.add('stopping');
-                await this.delay(300); // let the stopping animation finish
-                reelContent.classList.remove('stopping'); // then remove the class altogether
+                setTimeout(() => {
+                    reelContent.classList.remove('spinning');
+                    reelContent.style.transition = "transform 0.8s ease-out";
+                    reelContent.style.transform = "translateY(0)";
+                }, 300);
     
                 // update the inner text
                 const symbolElement = reelContent.querySelector('.symbol');

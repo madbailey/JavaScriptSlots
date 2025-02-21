@@ -120,9 +120,9 @@ body {
       transform: translateY(0);
     }
     100% {
-      transform: translateY(-60px); 
+      transform: translateY(-120px); 
     }
-  }
+}
   @keyframes flyToWallet {
     0% {
       transform: translate(0, 0) scale(1);
@@ -181,13 +181,13 @@ body {
   /* Reel State Styles */
   
   .spinning {
-    animation: spinReel 1s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+    animation: spinReel 1.5s linear infinite;
   }
   
   .stopping {
-    animation: none;
+    animation: spinReel 0.8s ease-out;
+    animation-iteration-count: 1; /* Ensure it doesn't loop */
     transform: translateY(0);
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   
   /* Symbol Choices */
