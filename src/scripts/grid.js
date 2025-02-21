@@ -130,36 +130,44 @@ class Grid {
         });
     }
     async spinReels() {
-        // Start all reels spinning
+
+        const nextSymbols = Array(this.rows).fill(null).map(() => Array(this.columns).fill(null));
+    
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.columns; col++) {
+                const symbol = this.grid[row][col];
+                nextSymbols[row][col] = symbol ? symbol.unicode : '?';
+            }
+        }
+    
+
         for (let col = 0; col < this.columns; col++) {
             for (let row = 0; row < this.rows; row++) {
                 const reelElement = document.getElementById(`reel${row}${col}`);
                 const reelContent = reelElement.querySelector('.reel-content');
+                reelContent.style.transform = 'translateY(0)'; // Reset position
                 reelContent.classList.add('spinning');
             }
         }
-
-        // Stop reels sequentially
+    
+    
         for (let col = 0; col < this.columns; col++) {
             await this.delay(200); // Wait before stopping each column
-            
+    
             for (let row = 0; row < this.rows; row++) {
                 const reelElement = document.getElementById(`reel${row}${col}`);
                 const reelContent = reelElement.querySelector('.reel-content');
-                
-                // Stop spinning
+    
+                // Stop Spinning (remove spinning animation)
                 reelContent.classList.remove('spinning');
                 reelContent.classList.add('stopping');
-                
-                // Update symbol
+                await this.delay(300); // let the stopping animation finish
+                reelContent.classList.remove('stopping'); // then remove the class altogether
+    
+                // update the inner text
                 const symbolElement = reelContent.querySelector('.symbol');
-                const symbol = this.grid[row][col];
-                if (symbol) {
-                    symbolElement.textContent = symbol.unicode;
-                } else {
-                    symbolElement.textContent = '?';
-                }
-                
+                symbolElement.textContent = nextSymbols[row][col];
+    
                 // Add stop effect
                 reelElement.classList.add('shake');
                 await this.delay(50);
