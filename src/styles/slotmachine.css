@@ -64,12 +64,14 @@ body {
   /* Reel Content (Symbols Container) */
   .reel-content {
     position: relative;
-    transition: transform 0.5s ease-out;
-    height: 120px;
+    transition: transform 0.3s ease-out;
+    height: 300px;
     font-size: 24px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; 
+    flex-direction: column;
+    top:0;
   }
   
   /* Symbol */
@@ -81,7 +83,7 @@ body {
   
   /* Symbol blur while spinning*/
   .spinning .symbol {
-      filter: blur(2px);
+      filter: blur(5px);
   }
   
   /* Button Styling */
@@ -126,7 +128,7 @@ body {
       transform: translateY(0);
     }
     100% {
-      transform: translateY(-1000px);
+      transform: translateY(-300px);
     }
   }
   
@@ -188,11 +190,12 @@ body {
   /* Reel State Styles */
   
   .spinning {
-    animation: spinReel 0.5s linear infinite;
+    animation: spinReel 1s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
   }
   
   .stopping {
     animation: none;
+    transform: translateY(0);
     transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   
