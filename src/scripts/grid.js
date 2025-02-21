@@ -257,74 +257,93 @@ class Grid {
         }
     }
 
-     updateReels() {
+    updateReels() {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.columns; col++) {
                 const reelId = `reel${row}${col}`;
                 const reelElement = document.getElementById(reelId);
-
+    
                 if (reelElement) {
                     const symbolElement = reelElement.querySelector('.symbol');
                     const payoutElement = reelElement.querySelector('.payout'); // Keep for compatibility
-
+    
                     if (this.grid[row][col]) {
                         const symbol = this.grid[row][col];
                         symbolElement.textContent = symbol.unicode;
-
+    
                         // --- Animation Logic ---
-
-                       // 2. Check for interactions (destruction, bonus, etc.)
-                        //    You'll need to re-check interactions *here*
-                        //    to trigger the appropriate animations.
-
-                        // Example: Destruction animation (cat eats milk)
+    
                         const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
                         directions.forEach(([dRow, dCol]) => {
                             const adjRow = row + dRow;
                             const adjCol = col + dCol;
+    
+                            // Prevent out-of-bounds errors
                             if (adjRow >= 0 && adjRow < this.rows && adjCol >= 0 && adjCol < this.columns) {
                                 const adjSymbol = this.grid[adjRow][adjCol];
+    
                                 if (adjSymbol) {
                                     if (symbol.alias === 'cat' && adjSymbol.alias === 'milk') {
-                                            // Add a class for the destruction animation
-                                            const adjReel = document.getElementById(`reel${adjRow}${adjCol}`);
-                                             if(adjReel){ //check if it exists
-                                                const adjSymbolElement = adjReel.querySelector('.symbol');
-                                                adjSymbolElement.classList.add('destruction');
-                                                setTimeout(()=> {
-                                                    adjSymbolElement.classList.remove('destruction')
-                                                    adjSymbolElement.textContent = ""; //make it blank after
-                                                }, 2000);
-                                            }
-                                    } else if (symbol.alias === 'pirate' && adjSymbol.alias === 'dog'){
-                                          const adjReel = document.getElementById(`reel${adjRow}${adjCol}`);
-                                             if(adjReel){ //check if it exists
-                                                const adjSymbolElement = adjReel.querySelector('.symbol');
-                                                adjSymbolElement.classList.add('bonus'); //bonus css class added
-                                                setTimeout(()=> {
-                                                    adjSymbolElement.classList.remove('bonus')
-                                                }, 2000);
-                                            }
+                                        console.log("Cat drinks Milk!");
+    
+                                        // Apply cat "drinking" effect
+                                        symbolElement.classList.add('cat-drinking');
+    
+                                        // Fade out the milk symbol
+                                        const adjReel = document.getElementById(`reel${adjRow}${adjCol}`);
+                                        if (adjReel) {
+                                            const adjSymbolElement = adjReel.querySelector('.symbol');
+                                            adjSymbolElement.classList.add('milk-destroyed');
+    
+                                            // Delay actual removal from grid
+                                            setTimeout(() => {
+                                                adjSymbolElement.textContent = ""; // Remove symbol visually
+                                            }, 1000);
+                                        }
+    
+                                        // Show floating bonus payout text
+                                        const bonusDiv = document.createElement('div');
+                                        bonusDiv.className = 'bonus-payout';
+                                        bonusDiv.textContent = `+${adjSymbol.basePayout} Bonus!`;
+                                        document.body.appendChild(bonusDiv);
+    
+                                        // Position it over the cat symbol
+                                        const catRect = symbolElement.getBoundingClientRect();
+                                        bonusDiv.style.left = `${catRect.left + 10}px`;
+                                        bonusDiv.style.top = `${catRect.top - 20}px`;
+    
+                                        // Remove after animation
+                                        setTimeout(() => bonusDiv.remove(), 1500);
+                                    }
+    
+                                    // --- Pirate + Dog Bonus Animation ---
+                                    else if (symbol.alias === 'pirate' && adjSymbol.alias === 'dog') {
+                                        const adjReel = document.getElementById(`reel${adjRow}${adjCol}`);
+                                        if (adjReel) {
+                                            const adjSymbolElement = adjReel.querySelector('.symbol');
+                                            adjSymbolElement.classList.add('bonus'); // bonus CSS class added
+                                            setTimeout(() => {
+                                                adjSymbolElement.classList.remove('bonus');
+                                            }, 2000);
+                                        }
                                     }
                                 }
                             }
                         });
-
-
+    
                         // --- End Animation Logic ---
-
                         payoutElement.style.display = 'none'; // Hide original payout
-
                     } else {
                         symbolElement.textContent = '?';
-                         payoutElement.style.display = 'none'; // Hide if no symbol
+                        payoutElement.style.display = 'none'; // Hide if no symbol
                     }
                 }
             }
         }
-           
+    
         this.animatePayouts();
     }
+    
     animatePayouts() {
         const walletElement = document.getElementById('moneyDisplay');
         const walletRect = walletElement.getBoundingClientRect();

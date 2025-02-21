@@ -156,6 +156,22 @@ body {
       0%, 100% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.2); opacity: 0.8; }
   }
+
+  @keyframes drinkMilk {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.5); }
+}
+
+@keyframes bonusText {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
+}
   
   @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -234,7 +250,15 @@ body {
   }
   
   /* Visual Effects */
-  
+  .cat-drinking {
+    animation: drinkMilk 1s ease-in-out;
+}
+
+/* Milk disappearing effect */
+.milk-destroyed {
+    animation: fadeOut 1s ease-in-out forwards;
+}
+
   .winning-symbol {
       animation: pulse 0.5s ease-in-out;
   }
@@ -270,6 +294,14 @@ body {
       opacity: 0; /* Start hidden until animated */
       transition: opacity 0.5s ease-in-out; /* Control opacity separately if needed */
   }
+  .bonus-payout {
+    position: absolute;
+    font-size: 20px;
+    color: gold;
+    text-shadow: 2px 2px 5px rgba(255, 255, 0, 0.7);
+    pointer-events: none;
+    animation: bonusText 1.5s ease-out forwards;
+}
   
   .payout.animate {
       animation: flyToWallet 3.5s ease-out forwards;
