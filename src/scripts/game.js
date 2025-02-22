@@ -122,47 +122,60 @@ class Game {
 
     displaySymbolChoices() {
         const symbolChoicesContainer = document.getElementById('symbolChoices');
+        const popupBackground = document.createElement('div');
+        popupBackground.classList.add('popup-background');
+        document.body.appendChild(popupBackground);
+        popupBackground.style.display = 'block';
+    
         symbolChoicesContainer.innerHTML = ''; // Clear previous choices
     
-        // Style container for a better layout
-        symbolChoicesContainer.style.display = 'grid';
-        symbolChoicesContainer.style.gridTemplateColumns = 'repeat(3, 1fr)'; // 3 symbols per row
-        symbolChoicesContainer.style.gap = '10px';
-        symbolChoicesContainer.style.padding = '10px';
+        // Create a title
+        const title = document.createElement('h2');
+        title.textContent = "Choose a Symbol";
+        symbolChoicesContainer.appendChild(title);
     
-
+        // Create a grid layout container
+        const choiceContainer = document.createElement('div');
+        choiceContainer.classList.add('symbol-choice-container');
+        symbolChoicesContainer.appendChild(choiceContainer);
+    
+        // Get 3 random symbols
         const availableSymbols = Object.keys(symbols);
         const chosenSymbols = [];
         for (let i = 0; i < 3; i++) {
             let randomIndex = Math.floor(Math.random() * availableSymbols.length);
             chosenSymbols.push(availableSymbols[randomIndex]);
-            availableSymbols.splice(randomIndex, 1);  
+            availableSymbols.splice(randomIndex, 1);  // Remove to avoid duplicates
         }
     
         chosenSymbols.forEach(symbolAlias => {
             const symbol = symbols[symbolAlias];
-            const button = document.createElement('button');
+            const button = document.createElement('div');
     
-
+            // Apply styles
             button.classList.add('symbol-choice');
             button.innerHTML = `
                 <div class="symbol-icon">${symbol.unicode}</div>
-                <div class="symbol-name">${symbol.alias}</div>
+                <div class="symbol-name"><b>${symbol.alias}</b></div>
                 <div class="symbol-description">${symbol.tooltip}</div>
             `;
     
             button.onclick = () => {
                 this.player.addSymbol(symbolAlias);
-                symbolChoicesContainer.innerHTML = ''; 
+                symbolChoicesContainer.innerHTML = ''; // Clear choices after selection
                 symbolChoicesContainer.style.display = 'none';
+                popupBackground.style.display = 'none'; // Hide background blur
+                document.body.removeChild(popupBackground);
                 this.waitForNextRound();
             };
-            symbolChoicesContainer.appendChild(button);
+    
+            choiceContainer.appendChild(button);
         });
     
-
-        symbolChoicesContainer.style.display = 'block';
+        // Show the container
+        symbolChoicesContainer.style.display = 'flex';
     }
+    
     
 }
 
