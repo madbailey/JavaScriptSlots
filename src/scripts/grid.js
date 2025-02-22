@@ -152,8 +152,8 @@ class Grid {
     
         // Sequentially stop each column with a delay
         for (let col = 0; col < this.columns; col++) {
-            await this.delay(300); // Delay before stopping next column
-    
+            await this.delay(200 + Math.random() * 150); // Randomize column spin stop timing slightly
+
             for (let row = 0; row < this.rows; row++) {
                 const reelElement = document.getElementById(`reel${row}${col}`);
                 const reelContent = reelElement.querySelector('.reel-content');

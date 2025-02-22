@@ -74,10 +74,10 @@ body {
 }
   
   /* Symbol blur while spinning*/
-  .spinning .symbol {
-      filter: blur(5px);
-  }
-  
+  .stopping .symbol {
+    filter: blur(0px);
+    opacity: 1;
+}
   /* Button Styling */
   .button-container {
     margin-top: 10px;
@@ -117,12 +117,19 @@ body {
   
   @keyframes spinReel {
     0% {
-      transform: translateY(0);
+        transform: translateY(0);
+    }
+    15% {
+        transform: translateY(-20%); /* Fast acceleration */
+    }
+    85% {
+        transform: translateY(-280%); /* Sustained speed */
     }
     100% {
-      transform: translateY(-120px); 
+        transform: translateY(-300%); /* Slight slowdown */
     }
 }
+
   @keyframes flyToWallet {
     0% {
       transform: translate(0, 0) scale(1);
