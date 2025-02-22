@@ -130,9 +130,9 @@ class Grid {
         });
     }
     async spinReels() {
-
         const nextSymbols = Array(this.rows).fill(null).map(() => Array(this.columns).fill(null));
     
+        // Precompute next symbols
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.columns; col++) {
                 const symbol = this.grid[row][col];
@@ -140,19 +140,19 @@ class Grid {
             }
         }
     
-
+        // Make all reels spin initially
         for (let col = 0; col < this.columns; col++) {
             for (let row = 0; row < this.rows; row++) {
                 const reelElement = document.getElementById(`reel${row}${col}`);
                 const reelContent = reelElement.querySelector('.reel-content');
-                reelContent.style.transform = 'translateY(0)'; // Reset position
+                reelContent.style.transform = 'translateY(-300%)'; 
                 reelContent.classList.add('spinning');
             }
         }
     
-    
+        // Sequentially stop each column with a delay
         for (let col = 0; col < this.columns; col++) {
-            await this.delay(200); // Wait before stopping each column
+            await this.delay(300); // Delay before stopping next column
     
             for (let row = 0; row < this.rows; row++) {
                 const reelElement = document.getElementById(`reel${row}${col}`);
@@ -162,19 +162,19 @@ class Grid {
                     reelContent.classList.remove('spinning');
                     reelContent.style.transition = "transform 0.8s ease-out";
                     reelContent.style.transform = "translateY(0)";
-                }, 300);
     
-                // update the inner text
-                const symbolElement = reelContent.querySelector('.symbol');
-                symbolElement.textContent = nextSymbols[row][col];
+                    // Update the inner symbol
+                    const symbolElement = reelContent.querySelector('.symbol');
+                    symbolElement.textContent = nextSymbols[row][col];
     
-                // Add stop effect
-                reelElement.classList.add('shake');
-                await this.delay(50);
-                reelElement.classList.remove('shake');
+                    // Add slight shake effect when stopping
+                    reelElement.classList.add('shake');
+                    setTimeout(() => reelElement.classList.remove('shake'), 50);
+                }, 200);
             }
         }
     }
+    
 
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
