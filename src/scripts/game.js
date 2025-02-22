@@ -123,36 +123,47 @@ class Game {
     displaySymbolChoices() {
         const symbolChoicesContainer = document.getElementById('symbolChoices');
         symbolChoicesContainer.innerHTML = ''; // Clear previous choices
+    
+        // Style container for a better layout
+        symbolChoicesContainer.style.display = 'grid';
+        symbolChoicesContainer.style.gridTemplateColumns = 'repeat(3, 1fr)'; // 3 symbols per row
+        symbolChoicesContainer.style.gap = '10px';
+        symbolChoicesContainer.style.padding = '10px';
+    
 
-        // Get 3 random symbols
         const availableSymbols = Object.keys(symbols);
         const chosenSymbols = [];
         for (let i = 0; i < 3; i++) {
             let randomIndex = Math.floor(Math.random() * availableSymbols.length);
             chosenSymbols.push(availableSymbols[randomIndex]);
-            availableSymbols.splice(randomIndex, 1);  // Remove to avoid duplicates
+            availableSymbols.splice(randomIndex, 1);  
         }
-
-
+    
         chosenSymbols.forEach(symbolAlias => {
             const symbol = symbols[symbolAlias];
             const button = document.createElement('button');
-            button.textContent = `${symbol.unicode} (${symbol.alias}) - ${symbol.tooltip}`;
+    
+
+            button.classList.add('symbol-choice');
+            button.innerHTML = `
+                <div class="symbol-icon">${symbol.unicode}</div>
+                <div class="symbol-name">${symbol.alias}</div>
+                <div class="symbol-description">${symbol.tooltip}</div>
+            `;
+    
             button.onclick = () => {
                 this.player.addSymbol(symbolAlias);
-                symbolChoicesContainer.innerHTML = ''; // Clear choices after selection
-
-                // ADD THIS LINE TO HIDE THE CONTAINER:
+                symbolChoicesContainer.innerHTML = ''; 
                 symbolChoicesContainer.style.display = 'none';
-
                 this.waitForNextRound();
             };
             symbolChoicesContainer.appendChild(button);
         });
+    
 
-          // Show the container
         symbolChoicesContainer.style.display = 'block';
     }
+    
 }
 
 export default Game;

@@ -215,17 +215,14 @@ body {
   
   /* Symbol Choices */
   #symbolChoices {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #f0f0f0;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    z-index: 10;
-    text-align: center;
-  }
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 15px;
+    background: rgba(240, 240, 240, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
   
   #symbolChoices h2 {
     margin: 5px;
@@ -241,21 +238,35 @@ body {
   
   /* Symbol Choice styling */
   .symbol-choice {
-    font-size: 24px;
-    margin: 10px;
-    padding: 15px;
-    border: 2px solid #c8b6ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
     background: white;
-    border-radius: 10px;
+    border: 2px solid #c8b6ff;
+    border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s, background-color 0.2s;
-  }
+}
   
-  .symbol-choice:hover {
+.symbol-choice:hover {
     transform: scale(1.1);
     background-color: #ffd6ff;
-  }
-  
+}
+.symbol-icon {
+    font-size: 30px;
+}
+
+.symbol-name {
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.symbol-description {
+    font-size: 12px;
+    color: gray;
+    text-align: center;
+}
   /* Visual Effects */
   .cat-drinking {
     animation: drinkMilk 1s ease-in-out;
