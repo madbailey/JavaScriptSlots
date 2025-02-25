@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Slot Machine</title>
+    <title>Rogue Slots</title>
     <link rel="stylesheet" href="src/styles/slotmachine.css">
 </head>
 <body>
     <div class="slot-machine">
-        <div class="reels" id="reelsContainer"></div>
+        <h1 class="game-title">Rogue Slots</h1>
+        <div class="machine-decoration top"></div>
+        <div class="reels-container">
+            <div class="reels" id="reelsContainer"></div>
+        </div>
+        <div class="machine-decoration bottom"></div>
         <div class="button-container">
-            <button id="spinButton" onclick="startSpin()">Spin</button>
+            <button id="spinButton" onclick="startSpin()">
+                <span class="spin-text">Spin</span>
+            </button>
         </div>
           <!-- Status Bar -->
         <div id="statusBar" class="status-bar">

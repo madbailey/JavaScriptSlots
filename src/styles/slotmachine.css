@@ -6,7 +6,9 @@ body {
     height: 100vh;
     margin: 0;
     background-color: #bbd0ff; /* Soft blue */
-    font-family: Arial, sans-serif;
+    background-image: radial-gradient(circle, #c8e1ff 10%, #bbd0ff 90%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
   }
   
   /* Status Bar */
@@ -14,22 +16,83 @@ body {
     position: fixed;
     top: 10px;
     right: 10px;
-    background-color: #f0f0f0; /* Light grey background */
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f8f8f8; /* Lighter grey background */
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     z-index: 100;
     color: #333;
+    font-weight: 500;
+    border: 1px solid rgba(200, 182, 255, 0.3);
   }
   
   /* Slot Machine Container */
   .slot-machine {
     text-align: center;
-    padding: 20px;
-    background: #b8c0ff; /* Deeper blue */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    background: linear-gradient(145deg, #c4cbff, #b8c0ff);
+    border-radius: 16px;
+    box-shadow: 
+      0 6px 20px rgba(0, 0, 0, 0.1),
+      0 0 0 2px rgba(255, 255, 255, 0.1) inset;
     position: relative; /*  For absolute positioning of symbol choices */
+    max-width: 90%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+  }
+  
+  /* Game Title */
+  .game-title {
+    font-size: 28px;
+    color: #333;
+    margin: 0 0 15px 0;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .game-title:before, .game-title:after {
+    content: "✧";
+    font-size: 18px;
+    color: #ffd6ff;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .game-title:before {
+    left: -20px;
+  }
+  
+  .game-title:after {
+    right: -20px;
+  }
+  
+  /* Decorative Elements */
+  .machine-decoration {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 5px;
+    margin: 10px 0;
+    position: relative;
+    width: 100%;
+  }
+  
+  .machine-decoration.top {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+    margin-bottom: 15px;
+  }
+  
+  .machine-decoration.bottom {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+    margin-top: 15px;
+  }
+  
+  .reels-container {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
   
   /* Reels Grid */
@@ -37,7 +100,11 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    gap: 10px;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
   }
   
   /* Individual Reel */
@@ -47,10 +114,13 @@ body {
     background: white;
     width: 60px;
     height: 60px;
-    border: 2px solid gray;
+    border: 2px solid #c8c8c8;
+    border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
 }
   
   .reel-content {
@@ -71,6 +141,7 @@ body {
     opacity: 1;
     font-size: 24px;
     min-height: 60px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
   
   /* Symbol blur while spinning*/
@@ -80,22 +151,38 @@ body {
 }
   /* Button Styling */
   .button-container {
-    margin-top: 10px;
+    margin-top: 20px;
   }
   
   button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: 600;
     background-color: #ffd6ff;
     color: #282c34;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer; /*  Add cursor pointer for better UX */
-    transition: background-color 0.2s ease; /* Smooth transition */
+    transition: all 0.2s ease; /* Smooth transition */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.5px;
   }
   
   button:hover {
     background-color: #e7c6ff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Enhanced spin button */
+  .spin-text {
+    position: relative;
+    display: inline-block;
   }
   
   /* Disable Spin Button */
@@ -107,10 +194,14 @@ body {
   /* Result Display */
   #resultDisplay {
     margin-top: 20px;
-    padding: 10px;
+    padding: 12px 16px;
     font-weight: bold;
     background: #c8b6ff; /* Lavender */
-    border-radius: 5px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    font-size: 18px;
   }
   
   /* Animations */
@@ -161,13 +252,21 @@ body {
   
   @keyframes sparkle {
       0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 0.8; box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
   }
 
   @keyframes drinkMilk {
     0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.8; }
+    25% { transform: scale(1.1) rotate(-5deg); opacity: 1; }
+    50% { transform: scale(1.2) rotate(5deg); opacity: 0.9; }
+    75% { transform: scale(1.1) rotate(-5deg); opacity: 1; }
     100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes milkBeingConsumed {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.8) translateY(-5px); }
+    100% { opacity: 0.5; transform: scale(0.6) translateY(-10px); }
 }
 
 @keyframes fadeOut {
@@ -177,6 +276,7 @@ body {
 
 @keyframes bonusText {
     0% { transform: translateY(0) scale(1); opacity: 1; }
+    50% { transform: translateY(-10px) scale(1.3); opacity: 1; }
     100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
 }
   
@@ -200,6 +300,35 @@ body {
           opacity: 1;
       }
   }
+
+  @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); box-shadow: 0 0 10px rgba(200, 182, 255, 0.6); }
+  }
+
+  @keyframes friendshipBond {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.1) rotate(5deg); }
+    60% { transform: scale(1.15) rotate(-5deg); }
+    100% { transform: scale(1); }
+  }
+  
+  /* Connection effect between interacting symbols */
+  .connection-effect {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,214,255,0.5) 0%, rgba(255,214,255,0) 70%);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    animation: pulseConnection 1s ease-in-out infinite;
+  }
+  
+  @keyframes pulseConnection {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.7; }
+  }
   
   /* Reel State Styles */
   
@@ -221,20 +350,24 @@ body {
     transform: translate(-50%, -50%);
     width: 350px;
     background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     z-index: 100;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    border: 1px solid rgba(200, 182, 255, 0.5);
 }
   
   #symbolChoices h2 {
-    margin: 5px;
+    margin: 5px 0 15px;
     padding: 8px 12px;
-    font-size: 14px;
+    font-size: 18px;
+    color: #333;
+    border-bottom: 2px solid #ffd6ff;
+    width: 80%;
   }
   
   #symbolChoices button {
@@ -245,46 +378,61 @@ body {
   
   /* Symbol Choice styling */
   .symbol-choice {
-    background: #f0f0f0;
+    background: #f8f8f8;
     border: 2px solid #c8b6ff;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 15px;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .symbol-choice-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
     width: 100%;
+    padding: 10px 0;
 }
   
 .symbol-choice:hover {
-    transform: scale(1.1);
-    background-color: #ffd6ff;
+    transform: scale(1.05) translateY(-3px);
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: #ffd6ff;
 }
 .symbol-icon {
-    font-size: 30px;
+    font-size: 32px;
+    margin-bottom: 5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .symbol-name {
     font-weight: bold;
     margin-top: 5px;
+    font-size: 14px;
 }
 
 .symbol-description {
     font-size: 12px;
-    color: gray;
+    color: #777;
     text-align: center;
+    padding-top: 4px;
 }
   /* Visual Effects */
   .cat-drinking {
     animation: drinkMilk 1s ease-in-out;
+    z-index: 10;
+}
+
+/* Milk being consumed effect */
+.milk-being-consumed {
+    animation: milkBeingConsumed 0.8s ease-in-out;
+    z-index: 5;
 }
 
 /* Milk disappearing effect */
@@ -314,6 +462,12 @@ body {
   .shake {
       animation: shake 0.1s ease-in-out 3;
   }
+
+  /* Pirate and dog friendship animation */
+  .pirate-dog-friend {
+      animation: friendshipBond 1.2s ease-in-out;
+      z-index: 10;
+  }
   
   /* Payouts and Wins */
   
@@ -324,8 +478,10 @@ body {
       text-align: center;
       color: rgb(90, 87, 38);
       font-size: 16px;
+      font-weight: bold;
       opacity: 0; /* Start hidden until animated */
       transition: opacity 0.5s ease-in-out; /* Control opacity separately if needed */
+      text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);
   }
   .bonus-payout {
     position: absolute;
@@ -334,6 +490,11 @@ body {
     text-shadow: 2px 2px 5px rgba(255, 255, 0, 0.7);
     pointer-events: none;
     animation: bonusText 1.5s ease-out forwards;
+    z-index: 20;
+    font-weight: bold;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
 }
   
   .payout.animate {
@@ -371,5 +532,18 @@ body {
     color: green;
     font-weight: bold;
     animation: rentPaidAnimation 2s ease-out;
+  }
+
+  /* Add a popup background style to dim the rest of the screen */
+  .popup-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 50;
+    display: none;
   }
   
