@@ -19,7 +19,19 @@ const symbols = {
     bountyHunter: new GameSymbol("🤠", "bountyHunter", "Gives 2 coins. Removes adjacent Thieves for a large payout.", 2, 0.8),
     goldenCoin: new GameSymbol("🪙", "goldenCoin", "Gives 5 coins every spin. Cannot be removed.", 5, 0.4),
     seed: new GameSymbol("🌱", "seed", "Gives 1 coin. Can grow into different plants when next to Water.", 1, 1),
-    water: new GameSymbol("💧", "water", "Helps Seeds grow into plants. Disappears after use.", 0, 1)
+    water: new GameSymbol("💧", "water", "Helps Seeds grow into plants. Disappears after use.", 0, 1),
+    
+    // New Symbols
+    egg: new GameSymbol("🥚", "egg", "Gives 1 coin. Hatches into a chicken after 5 turns. Chickens lay more eggs!", 1, 0.7),
+    chicken: new GameSymbol("🐔", "chicken", "Gives 3 coins. Lays eggs every few turns.", 3, 0.5),
+    bank: new GameSymbol("🏦", "bank", "Collects adjacent coins and pays interest. The more coins it collects, the more it pays.", 1, 0.4),
+    coin: new GameSymbol("💰", "coin", "Gives 2 coins. Can be collected by a Bank for higher interest.", 2, 0.8),
+    magnet: new GameSymbol("🧲", "magnet", "Attracts metal objects. Pulls adjacent symbols toward it, creating chains of effects.", 2, 0.6),
+    metal: new GameSymbol("⚙️", "metal", "Basic metal component. Worth more when adjacent to a Magnet.", 1, 0.9),
+    farmer: new GameSymbol("👨‍🌾", "farmer", "Tends to plants. Speeds up growth of Seeds and harvests ready Plants.", 2, 0.7),
+    clock: new GameSymbol("🕰️", "clock", "Manipulates time. Speeds up aging processes of adjacent symbols.", 1, 0.5),
+    mushroom: new GameSymbol("🍄", "mushroom", "Gives 2 coins. Grows and spreads to empty slots over time.", 2, 0.6),
+    bomb: new GameSymbol("💣", "bomb", "Dangerous but valuable. Explodes after 3 turns, destroying adjacent symbols but giving huge payout.", 3, 0.3)
 };
 
 // --- Interactions ---
@@ -63,10 +75,63 @@ for (let key in symbols) {
 }
 
 // Seed grows into a random plant when next to Water
-
 symbols.water.addAdjacencyEffect("seed", "transformation", { transformsInto: ["🍎", "🍌", "🍇", "🌳"] });
-
-
 symbols.water.addAdjacencyEffect("", "adjacencyDestruction", {});
+
+// NEW SYMBOL INTERACTIONS
+
+// Egg hatches into chicken after aging
+symbols.egg.addGlobalEffect("ageSymbol", { 
+    matureAge: 5, 
+    transformTo: "chicken", 
+    transformToUnicode: "🐔" 
+});
+
+// Clock speeds up egg aging process
+symbols.clock.addAdjacencyEffect("egg", "ageEgg", { hatchAge: 3, hatchesInto: "chicken", hatchesIntoUnicode: "🐔" });
+
+// Chicken lays eggs every few turns
+symbols.chicken.addGlobalEffect("harvestValue", { 
+    baseValue: 3, 
+    valuePerTurn: 0.5 
+});
+
+// Farmer increases chicken egg production
+symbols.farmer.addAdjacencyEffect("chicken", "adjacencyBonus", { bonusAmount: 4 });
+
+// Bank collects coins for interest
+symbols.bank.addAdjacencyEffect("coin", "bankDeposit", { baseInterest: 1.5 });
+symbols.bank.addAdjacencyEffect("goldenCoin", "bankDeposit", { baseInterest: 2 });
+
+// Bank pays higher interest with more deposits
+symbols.bank.addGlobalEffect("harvestValue", { 
+    baseValue: 1, 
+    valuePerTurn: 0.2 
+});
+
+// Magnet attracts metal items
+symbols.magnet.addAdjacencyEffect("metal", "adjacencyBonus", { bonusAmount: 5 });
+
+// Metal becomes more valuable next to magnet
+symbols.metal.addAdjacencyEffect("magnet", "adjacencyBonus", { bonusAmount: 3 });
+
+// Mushroom has a chance to spread to adjacent spots
+symbols.mushroom.addGlobalEffect("harvestValue", { 
+    baseValue: 2, 
+    valuePerTurn: 0.5 
+});
+
+// Bomb counts down to explosion
+symbols.bomb.addGlobalEffect("ageSymbol", { 
+    matureAge: 3, 
+    transformTo: "explosion" 
+});
+
+// Bomb explodes, destroying adjacent symbols but giving huge payout
+for (let key in symbols) {
+    if (key !== "bomb") {
+        symbols.bomb.addAdjacencyEffect(key, "adjacencyDestruction", { bonusAmount: 5 });
+    }
+}
 
 export default symbols;
