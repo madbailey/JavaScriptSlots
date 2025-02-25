@@ -31,7 +31,15 @@ const symbols = {
     farmer: new GameSymbol("👨‍🌾", "farmer", "Tends to plants. Speeds up growth of Seeds and harvests ready Plants.", 2, 0.7),
     clock: new GameSymbol("🕰️", "clock", "Manipulates time. Speeds up aging processes of adjacent symbols.", 1, 0.5),
     mushroom: new GameSymbol("🍄", "mushroom", "Gives 2 coins. Grows and spreads to empty slots over time.", 2, 0.6),
-    bomb: new GameSymbol("💣", "bomb", "Dangerous but valuable. Explodes after 3 turns, destroying adjacent symbols but giving huge payout.", 3, 0.3)
+    bomb: new GameSymbol("💣", "bomb", "Dangerous but valuable. Explodes after 3 turns, destroying adjacent symbols but giving huge payout.", 3, 0.3),
+    
+    // Additional Symbols
+    bee: new GameSymbol("🐝", "bee", "Gives 1 coin alone. When next to a Flower, both give much more!", 1, 0.8),
+    flower: new GameSymbol("🌸", "flower", "Gives 1 coin alone. When pollinated by a Bee, both give much more!", 1, 0.8),
+    lock: new GameSymbol("🔒", "lock", "Gives 0 coins alone. When paired with a Key, gives a huge payout!", 0, 0.6),
+    key: new GameSymbol("🔑", "key", "Gives 1 coin alone. When used on a Lock, gives a huge payout!", 1, 0.6),
+    sun: new GameSymbol("☀️", "sun", "Gives 2 coins. Makes adjacent plants grow faster and produce more.", 2, 0.5),
+    rain: new GameSymbol("🌧️", "rain", "Gives 1 coin. Makes adjacent plants grow faster and produce more.", 1, 0.7)
 };
 
 // --- Interactions ---
@@ -133,5 +141,29 @@ for (let key in symbols) {
         symbols.bomb.addAdjacencyEffect(key, "adjacencyDestruction", { bonusAmount: 5 });
     }
 }
+
+// ADDITIONAL SYMBOL INTERACTIONS
+
+// Bee pollinates Flower
+symbols.bee.addAdjacencyEffect("flower", "adjacencyBonus", { bonusAmount: 8 });
+
+// Flower gets pollinated by Bee
+symbols.flower.addAdjacencyEffect("bee", "adjacencyBonus", { bonusAmount: 8 });
+
+// Key unlocks Lock
+symbols.key.addAdjacencyEffect("lock", "adjacencyBonus", { bonusAmount: 15 });
+
+// Lock gets unlocked by Key
+symbols.lock.addAdjacencyEffect("key", "adjacencyBonus", { bonusAmount: 15 });
+
+// Sun enhances plants
+symbols.sun.addAdjacencyEffect("seed", "adjacencyBonus", { bonusAmount: 3 });
+symbols.sun.addAdjacencyEffect("flower", "adjacencyBonus", { bonusAmount: 4 });
+symbols.sun.addAdjacencyEffect("mushroom", "adjacencyBonus", { bonusAmount: 3 });
+
+// Rain enhances plants
+symbols.rain.addAdjacencyEffect("seed", "adjacencyBonus", { bonusAmount: 2 });
+symbols.rain.addAdjacencyEffect("flower", "adjacencyBonus", { bonusAmount: 3 });
+symbols.rain.addAdjacencyEffect("mushroom", "adjacencyBonus", { bonusAmount: 4 });
 
 export default symbols;

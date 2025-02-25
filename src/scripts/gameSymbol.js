@@ -342,4 +342,11 @@ class GameSymbol {
     }
 }
 
+// Add export for both browser and Node.js environments
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports.default = GameSymbol;
+} else {
+    window.GameSymbol = GameSymbol;
+}
+
 export default GameSymbol;
