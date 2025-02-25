@@ -257,7 +257,33 @@ class Grid {
         }
     }
 
+    // Clear animation classes from all reels
+    clearAnimationClasses() {
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.columns; col++) {
+                const reelElement = document.getElementById(`reel${row}${col}`);
+                if (reelElement) {
+                    const symbolElement = reelElement.querySelector('.symbol');
+                    if (symbolElement) {
+                        symbolElement.classList.remove('cat-drinking', 'milk-destroyed', 'milk-being-consumed', 'symbol-win');
+                    }
+                    
+                    // Remove any bonus payout elements
+                    const bonusElements = reelElement.querySelectorAll('.bonus-payout');
+                    bonusElements.forEach(el => el.remove());
+                    
+                    // Remove any connection effects
+                    const connectionElements = reelElement.querySelectorAll('.connection-effect');
+                    connectionElements.forEach(el => el.remove());
+                }
+            }
+        }
+    }
+
     updateReels() {
+        // First clear animation classes from previous rounds
+        this.clearAnimationClasses();
+        
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.columns; col++) {
                 const reelId = `reel${row}${col}`;
@@ -271,67 +297,89 @@ class Grid {
                         const symbol = this.grid[row][col];
                         symbolElement.textContent = symbol.unicode;
     
-                        // --- Animation Logic ---
+                        // Process interactions with a delay to ensure they happen after spinning completes
+                        setTimeout(() => {
+                            // --- Animation Logic ---
+                            const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                            directions.forEach(([dRow, dCol]) => {
+                                const adjRow = row + dRow;
+                                const adjCol = col + dCol;
     
-                        const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-                        directions.forEach(([dRow, dCol]) => {
-                            const adjRow = row + dRow;
-                            const adjCol = col + dCol;
+                                // Prevent out-of-bounds errors
+                                if (adjRow >= 0 && adjRow < this.rows && adjCol >= 0 && adjCol < this.columns) {
+                                    const adjSymbol = this.grid[adjRow][adjCol];
     
-                            // Prevent out-of-bounds errors
-                            if (adjRow >= 0 && adjRow < this.rows && adjCol >= 0 && adjCol < this.columns) {
-                                const adjSymbol = this.grid[adjRow][adjCol];
+                                    if (adjSymbol) {
+                                        if (symbol.alias === 'cat' && adjSymbol.alias === 'milk') {
+                                            console.log("Cat drinks Milk!");
     
-                                if (adjSymbol) {
-                                    if (symbol.alias === 'cat' && adjSymbol.alias === 'milk') {
-                                        console.log("Cat drinks Milk!");
+                                            // Apply cat "drinking" effect
+                                            symbolElement.classList.add('cat-drinking');
     
-                                        // Apply cat "drinking" effect
-                                        symbolElement.classList.add('cat-drinking');
-    
-                                        // Fade out the milk symbol
-                                        const adjReel = document.getElementById(`reel${adjRow}${adjCol}`);
-                                        if (adjReel) {
-                                            const adjSymbolElement = adjReel.querySelector('.symbol');
-                                            adjSymbolElement.classList.add('milk-destroyed');
-    
-                                            // Delay actual removal from grid
-                                            setTimeout(() => {
-                                                if (!this.grid[row][col]) {
-                                                    adjsymbolElement.textContent = "?"; // Ensure empty spaces show "?"
-                                                }
-                                            }, 1000);
+                                            // Fade out the milk symbol
+                                            const adjReel = document.getElementById(`reel${adjRow}${adjCol}`);
+                                            if (adjReel) {
+                                                const adjSymbolElement = adjReel.querySelector('.symbol');
+                                                
+                                                // First show milk being consumed animation
+                                                adjSymbolElement.classList.add('milk-being-consumed');
+                                                
+                                                // Create a connection effect between cat and milk
+                                                const connectionEffect = document.createElement('div');
+                                                connectionEffect.className = 'connection-effect';
+                                                reelElement.appendChild(connectionEffect);
+                                                
+                                                // After a delay, show milk disappearing
+                                                setTimeout(() => {
+                                                    adjSymbolElement.classList.remove('milk-being-consumed');
+                                                    adjSymbolElement.classList.add('milk-destroyed');
+                                                    
+                                                    // Show floating bonus payout text
+                                                    const bonusDiv = document.createElement('div');
+                                                    bonusDiv.className = 'bonus-payout';
+                                                    bonusDiv.textContent = `+${adjSymbol.basePayout} Bonus!`;
+                                                    reelElement.appendChild(bonusDiv);
+                                                    
+                                                    // Clean up after animation 
+                                                    setTimeout(() => {
+                                                        adjSymbolElement.textContent = "?";
+                                                        adjSymbolElement.classList.remove('milk-destroyed');
+                                                        symbolElement.classList.remove('cat-drinking');
+                                                        connectionEffect.remove();
+                                                        bonusDiv.remove();
+                                                    }, 1000);
+                                                }, 700);
+                                            }
                                         }
     
-                                        // Show floating bonus payout text
-                                        const bonusDiv = document.createElement('div');
-                                        bonusDiv.className = 'bonus-payout';
-                                        bonusDiv.textContent = `+${adjSymbol.basePayout} Bonus!`;
-                                        document.body.appendChild(bonusDiv);
-    
-                                        // Position it over the cat symbol
-                                        const catRect = symbolElement.getBoundingClientRect();
-                                        bonusDiv.style.left = `${catRect.left + 10}px`;
-                                        bonusDiv.style.top = `${catRect.top - 20}px`;
-    
-                                        // Remove after animation
-                                        setTimeout(() => bonusDiv.remove(), 1500);
-                                    }
-    
-                                    // --- Pirate + Dog Bonus Animation ---
-                                    else if (symbol.alias === 'pirate' && adjSymbol.alias === 'dog') {
-                                        const adjReel = document.getElementById(`reel${adjRow}${adjCol}`);
-                                        if (adjReel) {
-                                            const adjSymbolElement = adjReel.querySelector('.symbol');
-                                            adjSymbolElement.classList.add('bonus'); // bonus CSS class added
-                                            setTimeout(() => {
-                                                adjSymbolElement.classList.remove('bonus');
-                                            }, 2000);
+                                        // --- Pirate + Dog Bonus Animation ---
+                                        else if (symbol.alias === 'pirate' && adjSymbol.alias === 'dog') {
+                                            const adjReel = document.getElementById(`reel${adjRow}${adjCol}`);
+                                            if (adjReel) {
+                                                const adjSymbolElement = adjReel.querySelector('.symbol');
+                                                
+                                                // Create a friendship effect
+                                                symbolElement.classList.add('pirate-dog-friend');
+                                                adjSymbolElement.classList.add('pirate-dog-friend');
+                                                
+                                                // Create a bonus indicator
+                                                const bonusDiv = document.createElement('div');
+                                                bonusDiv.className = 'bonus-payout';
+                                                bonusDiv.textContent = 'Friends!';
+                                                reelElement.appendChild(bonusDiv);
+                                                
+                                                // Clean up after animation
+                                                setTimeout(() => {
+                                                    symbolElement.classList.remove('pirate-dog-friend');
+                                                    adjSymbolElement.classList.remove('pirate-dog-friend');
+                                                    bonusDiv.remove();
+                                                }, 2000);
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }, 500); // Small delay to ensure reels have stopped spinning
     
                         // --- End Animation Logic ---
                         payoutElement.style.display = 'none'; // Hide original payout
@@ -343,7 +391,10 @@ class Grid {
             }
         }
     
-        this.animatePayouts();
+        // Delay payout animations to come after symbol interactions
+        setTimeout(() => {
+            this.animatePayouts();
+        }, 1000);
     }
     
     animatePayouts() {

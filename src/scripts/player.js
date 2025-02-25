@@ -6,8 +6,8 @@ import symbols from './symbol_list.js';
 
 class Player {
   constructor() {
-      this.inventory = ['cat', 'cat', 'milk', 'pirate', 'dog']; // Start with some symbols
-      this.wallet = 25;
+      this.inventory = ['cat', 'milk', 'dog', 'bone']; // Reduced starting symbols for more challenge
+      this.wallet = 20; // Reduced starting money
       this.bonusItems = [];
       this.game = null; // Add a game property
   }
